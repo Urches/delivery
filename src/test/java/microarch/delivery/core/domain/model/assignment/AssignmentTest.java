@@ -1,5 +1,6 @@
 package microarch.delivery.core.domain.model.assignment;
 
+import libs.util.ReasonedResult;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.order.Volume;
 import org.junit.jupiter.api.DisplayName;
@@ -178,6 +179,94 @@ class AssignmentTest {
             var assignment = assignmentResult.getValue();
 
             assertThrows(NullPointerException.class, () -> assignment.complete(null));
+        }
+    }
+
+    @Nested
+    @DisplayName("Проверка canBeCompleted")
+    class CanBeCompletedTests {
+
+        @Test
+        @DisplayName("Должен возвращать успех с true, если курьер находится в той же клетке (расстояние 0)")
+        void shouldReturnSuccessWhenCourierIsAtSameLocation() {
+            var volumeResult = Volume.create(50);
+            var locationResult = Location.create(5, 5);
+            var assignmentResult = Assignment.create(TEST_ID, TEST_ORDER_ID, volumeResult.getValue(),
+                    locationResult.getValue());
+
+            var assignment = assignmentResult.getValue();
+            var courierLocationResult = Location.create(5, 5);
+
+            ReasonedResult<Boolean> result = assignment.canBeCompleted(courierLocationResult.getValue());
+            assertNotNull(result.getValue());
+            assertTrue(result.getValue());
+        }
+
+        @Test
+        @DisplayName("Должен возвращать успех с true, если курьер находится на расстоянии 1")
+        void shouldReturnSuccessWhenCourierIsAtDistanceOne() {
+            var volumeResult = Volume.create(50);
+            var orderLocationResult = Location.create(5, 5);
+            var assignmentResult = Assignment.create(TEST_ID, TEST_ORDER_ID, volumeResult.getValue(),
+                    orderLocationResult.getValue());
+
+            var assignment = assignmentResult.getValue();
+            var courierLocationResult = Location.create(5, 6);
+
+            ReasonedResult<Boolean> result = assignment.canBeCompleted(courierLocationResult.getValue());
+            assertNotNull(result.getValue());
+            assertTrue(result.getValue());
+        }
+
+        @Test
+        @DisplayName("Должен возвращать false с причинами, если курьер находится на расстоянии больше 1")
+        void shouldReturnFailureWhenCourierIsTooFar() {
+            var volumeResult = Volume.create(50);
+            var orderLocationResult = Location.create(5, 5);
+            var assignmentResult = Assignment.create(TEST_ID, TEST_ORDER_ID, volumeResult.getValue(),
+                    orderLocationResult.getValue());
+
+            var assignment = assignmentResult.getValue();
+            var courierLocationResult = Location.create(5, 7);
+
+            ReasonedResult<Boolean> result = assignment.canBeCompleted(courierLocationResult.getValue());
+            assertNotNull(result.getValue());
+            assertFalse(result.getValue());
+            assertFalse(result.getReasons().isEmpty());
+        }
+
+        @Test
+        @DisplayName("Должен возвращать false с причинами, если Assignment уже завершен")
+        void shouldReturnFailureWhenAssignmentIsCompleted() {
+            var volumeResult = Volume.create(50);
+            var orderLocationResult = Location.create(5, 5);
+            var assignmentResult = Assignment.create(TEST_ID, TEST_ORDER_ID, volumeResult.getValue(),
+                    orderLocationResult.getValue());
+
+            var assignment = assignmentResult.getValue();
+            // Завершаем Assignment
+            var courierLocationResult1 = Location.create(5, 5);
+            assignment.complete(courierLocationResult1.getValue());
+
+            // Проверяем canBeCompleted
+            var courierLocationResult2 = Location.create(5, 5);
+            ReasonedResult<Boolean> result = assignment.canBeCompleted(courierLocationResult2.getValue());
+            assertNotNull(result.getValue());
+            assertFalse(result.getValue());
+            assertFalse(result.getReasons().isEmpty());
+        }
+
+        @Test
+        @DisplayName("Должен выбрасывать NullPointerException при null courierLocation")
+        void shouldThrowExceptionWhenCourierLocationIsNull() {
+            var volumeResult = Volume.create(50);
+            var locationResult = Location.create(5, 5);
+            var assignmentResult = Assignment.create(TEST_ID, TEST_ORDER_ID, volumeResult.getValue(),
+                    locationResult.getValue());
+
+            var assignment = assignmentResult.getValue();
+
+            assertThrows(NullPointerException.class, () -> assignment.canBeCompleted(null));
         }
     }
 }
