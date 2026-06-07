@@ -97,6 +97,10 @@ public final class GeneralErrors {
                 String.format("The value of %s (%s) must be less than or equal to %s.", name, value, max));
     }
 
+    public static Error invalidOperation(String message) {
+        return Error.of("invalid.operation", message);
+    }
+
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.trim().isEmpty();
     }
