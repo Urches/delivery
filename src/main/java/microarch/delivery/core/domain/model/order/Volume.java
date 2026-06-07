@@ -25,9 +25,7 @@ public class Volume extends ValueObject<Volume> {
     /**
      * Фабричный метод для создания Volume.
      *
-     * @param value
-     *            значение объема (от 1 до 100)
-     *
+     * @param value значение объема (от 1 до 100)
      * @return Result с Volume при успехе или Error при неудаче
      */
     public static Result<Volume, Error> create(int value) {
@@ -41,9 +39,7 @@ public class Volume extends ValueObject<Volume> {
     /**
      * Проверяет валидность объема.
      *
-     * @param value
-     *            значение объема
-     *
+     * @param value значение объема
      * @return Error если объем невалиден, null если валиден
      */
     private static Error validate(int value) {
