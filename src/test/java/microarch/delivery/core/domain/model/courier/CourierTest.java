@@ -160,7 +160,7 @@ class CourierTest {
             assertTrue(courier.takeOrder(order3).isSuccess());
 
             assertEquals(3, courier.getAssignments().size());
-            assertEquals(20, courier.getCurrentVolume().getValue());
+            assertEquals(20, courier.getCurrentVolume().orElseThrow().getValue());
         }
 
         @Test

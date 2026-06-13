@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Volume - Value Object, представляющий объем заказа. Диапазон допустимых значений: от 1 до 100 включительно.
@@ -40,15 +41,12 @@ public class Volume extends ValueObject<Volume> {
      * Метод для создания нового Volume, содержащего value текущего Volume + value входного Volume.
      *
      * @param volume добавочное значение Volume
-     * @return Result с Volume при успехе или Error при неудаче. Если volume == null, вернёт текущий Volume
+     * @return Result с Volume при успехе или Error при неудаче. Если volume == null - ошибка
      */
-    public Result<Volume, Error> newVolumeSafe(Volume volume) {
-        if (volume == null)
-            return Result.success(this);
-        else {
-            int newValue = this.value + volume.value;
-            return Volume.create(newValue);
-        }
+    public Result<Volume, Error> plus(Volume volume) {
+        Objects.requireNonNull(volume, "Volume must not be null");
+
+        return Volume.create(this.value + volume.value);
     }
 
     /**

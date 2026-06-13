@@ -10,10 +10,7 @@ import microarch.delivery.core.domain.model.assignment.Assignment;
 import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.order.Volume;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Courier - Aggregate Root, представляющий курьера.
@@ -32,8 +29,7 @@ public class Courier extends Aggregate<UUID> {
 
     private final String name;
     private Location location;
-    private final Volume maxVolume; // не уверен, что maxVolume должен быть отдельным свойством, но оставил как описано
-    private Volume currentVolume;
+    private final Volume maxVolume;
     private final List<Assignment> assignments = new ArrayList<>();
 
     /**
@@ -67,7 +63,7 @@ public class Courier extends Aggregate<UUID> {
             return Result.failure(error);
         }
 
-        var maxVolume = Volume.create(MAX_VOLUME_LIMIT).getValue();
+        var maxVolume = Volume.create(MAX_VOLUME_LIMIT).getValueOrThrow();
         return Result.success(new Courier(id, name, location, maxVolume));
     }
 
@@ -81,20 +77,23 @@ public class Courier extends Aggregate<UUID> {
      * @return ReasonedResult с true при успехе или причинами отказа при неудаче
      */
     public ReasonedResult<Boolean> canTakeOrder(Order order) {
-        Objects.requireNonNull(order, "Assignment volume must not be null");
+        Objects.requireNonNull(order, "Order must not be null");
 
-        var orderVolume = order.getVolume();
-        var volumeCandidateResult = orderVolume.newVolumeSafe(currentVolume);
-        if (volumeCandidateResult.isFailure()) {
-            return ReasonedResult.withReason(false, volumeCandidateResult.getError());
+        var newCurrentVolumeResult = getCurrentVolume()
+                .map(volume -> volume.plus(order.getVolume()))
+                .orElse(Result.success(order.getVolume()));
+
+        if (newCurrentVolumeResult.isFailure()) {
+            return ReasonedResult.withReason(false, newCurrentVolumeResult.getError());
         }
-        var newVolumeCandidate = volumeCandidateResult.getValue();
+
+        var newVolumeCandidate = newCurrentVolumeResult.getValue();
         if (newVolumeCandidate.lessOrEqual(maxVolume)) {
             return ReasonedResult.withNoReason(true);
         } else {
             return ReasonedResult.withReason(false, String.format(
-                    "Cannot take assignment: current volume (%s) + assignment volume (%s) exceeds max volume (%s)",
-                    currentVolume, orderVolume, maxVolume));
+                    "Cannot take assignment: new volume (%s) exceeds max volume (%s)",
+                    newVolumeCandidate, maxVolume));
         }
     }
 
@@ -115,7 +114,10 @@ public class Courier extends Aggregate<UUID> {
             return Result.failure(GeneralErrors
                     .invalidOperation(String.format("Cannot take order. Reasons: %s", result.getReasons())));
         } else {
-            var newCurrentVolumeResult = order.getVolume().newVolumeSafe(currentVolume);
+            var newCurrentVolumeResult = getCurrentVolume()
+                    .map(volume -> volume.plus(order.getVolume()))
+                    .orElse(Result.success(order.getVolume()));
+
             if (newCurrentVolumeResult.isFailure()) {
                 return Result.failure(GeneralErrors
                         .invalidOperation(String.format("Cannot take order. Reasons: %s", result.getReasons())));
@@ -127,7 +129,6 @@ public class Courier extends Aggregate<UUID> {
                         .invalidOperation(String.format("Cannot take order. Reasons: %s", result.getReasons())));
             }
 
-            currentVolume = newCurrentVolumeResult.getValue();
             assignments.add(assignmentResult.getValue());
             return Result.success();
         }
@@ -160,5 +161,14 @@ public class Courier extends Aggregate<UUID> {
 
         this.location = newLocation;
         return Result.success();
+    }
+
+    /**
+     * @return возвращает суммарный Volume всех заказов
+     */
+    public Optional<Volume> getCurrentVolume() {
+        return this.assignments.stream()
+                .map(Assignment::getVolume)
+                .reduce((first, second) -> first.plus(second).getValueOrThrow());
     }
 }
