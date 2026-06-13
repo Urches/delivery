@@ -7,6 +7,7 @@ import libs.util.ReasonedResult;
 import lombok.Getter;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.assignment.Assignment;
+import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.order.Volume;
 
 import java.util.ArrayList;
@@ -57,7 +58,9 @@ public class Courier extends Aggregate<UUID> {
      * @return Result с Courier при успехе или Error при неудаче
      */
     public static Result<Courier, Error> create(UUID id, String name, Location location) {
-        var error = Guard.combine(Guard.againstNullOrEmpty(id, "id"), Guard.againstNullOrEmpty(name, "name"),
+        var error = Guard.combine(
+                Guard.againstNullOrEmpty(id, "id"),
+                Guard.againstNullOrEmpty(name, "name"),
                 location == null ? GeneralErrors.valueIsRequired("location") : null);
 
         if (error != null) {
@@ -74,18 +77,14 @@ public class Courier extends Aggregate<UUID> {
      * Курьер может брать новые заказы, если сумма объемов всех заказов с учетом нового не превышает максимум (20
      * литров).
      *
-     * @param assignment заказа, который нужно проверить
+     * @param order - заказ, который нужно проверить
      * @return ReasonedResult с true при успехе или причинами отказа при неудаче
      */
-    public ReasonedResult<Boolean> canTakeAssignment(Assignment assignment) {
-        Objects.requireNonNull(assignment, "Assignment volume must not be null");
-        if (this.assignments.contains(assignment)) {
-            return ReasonedResult.withReason(false,
-                    String.format("Can't take assignment (%s), already taken", assignment.getId()));
-        }
+    public ReasonedResult<Boolean> canTakeOrder(Order order) {
+        Objects.requireNonNull(order, "Assignment volume must not be null");
 
-        var assignmentVolume = assignment.getVolume();
-        var volumeCandidateResult = assignmentVolume.newVolumeSafe(currentVolume);
+        var orderVolume = order.getVolume();
+        var volumeCandidateResult = orderVolume.newVolumeSafe(currentVolume);
         if (volumeCandidateResult.isFailure()) {
             return ReasonedResult.withReason(false, volumeCandidateResult.getError());
         }
@@ -95,34 +94,41 @@ public class Courier extends Aggregate<UUID> {
         } else {
             return ReasonedResult.withReason(false, String.format(
                     "Cannot take assignment: current volume (%s) + assignment volume (%s) exceeds max volume (%s)",
-                    currentVolume, assignmentVolume, maxVolume));
+                    currentVolume, orderVolume, maxVolume));
         }
     }
 
     /**
      * Берет заказ в работу.
      * <p>
-     * Если курьер взял заказ, то в assignments добавляется assignments.
+     * Если курьер взял заказ, то создаётся Assignment и добавляется assignments.
      *
-     * @param assignment назначение (Assignment) с объемом заказа
+     * @param order - заказ
      * @return Result с void при успехе или Error при неудаче
      */
-    public Result<Void, Error> takeAssignment(Assignment assignment) {
-        Objects.requireNonNull(assignment, "Assignment must not be null");
+    public Result<Void, Error> takeOrder(Order order) {
+        Objects.requireNonNull(order, "Order must not be null");
 
-        var result = canTakeAssignment(assignment);
-        var canTakeAssignment = result.getValue();
-        if (!canTakeAssignment) {
+        var result = canTakeOrder(order);
+        var canTakeOrder = result.getValue();
+        if (!canTakeOrder) {
             return Result.failure(GeneralErrors
-                    .invalidOperation(String.format("Cannot take assignment. Reasons: %s", result.getReasons())));
+                    .invalidOperation(String.format("Cannot take order. Reasons: %s", result.getReasons())));
         } else {
-            var newCurrentVolumeResult = assignment.getVolume().newVolumeSafe(currentVolume);
+            var newCurrentVolumeResult = order.getVolume().newVolumeSafe(currentVolume);
             if (newCurrentVolumeResult.isFailure()) {
-                // should not happen
-                throw new DomainInvariantException(newCurrentVolumeResult.getError());
+                return Result.failure(GeneralErrors
+                        .invalidOperation(String.format("Cannot take order. Reasons: %s", result.getReasons())));
             }
+
+            var assignmentResult = Assignment.create(UUID.randomUUID(), order.getId(), order.getVolume(), order.getLocation());
+            if (assignmentResult.isFailure()) {
+                return Result.failure(GeneralErrors
+                        .invalidOperation(String.format("Cannot take order. Reasons: %s", result.getReasons())));
+            }
+
             currentVolume = newCurrentVolumeResult.getValue();
-            assignments.add(assignment);
+            assignments.add(assignmentResult.getValue());
             return Result.success();
         }
     }
@@ -132,24 +138,13 @@ public class Courier extends Aggregate<UUID> {
      * <p>
      * Курьер может завершить Assignment, только если он находится в 1 клетке от заказа или ближе.
      *
-     * @param assignment назначение для завершения
-     * @return Result с void при успехе или Error при неудаче
+     * @return true если хотя бы один Assignment был завершён, false в противном случае
      */
-    public Result<Void, Error> completeAssignment(Assignment assignment) {
-        Objects.requireNonNull(assignment, "Assignment must not be null");
+    public boolean completeAssignment() {
+        if (assignments.isEmpty())
+            return false;
 
-        if (!assignments.contains(assignment)) {
-            return Result.failure(GeneralErrors.invalidOperation(String.format(
-                    "Cannot complete assignment: assignment %s is not in courier's assignments", assignment.getId())));
-        }
-
-        var result = assignment.complete(this.location);
-        if (result.isFailure()) {
-            return Result.failure(result.getError());
-        }
-
-        assignments.remove(assignment);
-        return Result.success();
+        return assignments.removeIf(assignment -> assignment.complete(this.location).isSuccess());
     }
 
     /**

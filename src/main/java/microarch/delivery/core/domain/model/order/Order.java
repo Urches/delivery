@@ -8,9 +8,6 @@ import libs.errs.Result;
 import lombok.Getter;
 import microarch.delivery.core.domain.model.Location;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**

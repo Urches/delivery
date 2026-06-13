@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import microarch.delivery.core.domain.model.Location;
-import microarch.delivery.core.domain.model.assignment.Assignment;
+import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.order.Volume;
 
 import java.util.UUID;
@@ -94,35 +94,27 @@ class CourierTest {
         @DisplayName("Должен возвращать true для заказа, который не превышает максимум")
         void shouldReturnTrueWhenOrderFitsMaxVolume() {
             var courier = createValidCourier();
-            var assignment = createAssignmentWithVolume(15);
+            var order = createOrderWithVolume(15);
 
-            assertTrue(courier.canTakeAssignment(assignment).getValue());
+            assertTrue(courier.canTakeOrder(order).getValue());
         }
 
         @Test
         @DisplayName("Должен возвращать true для заказа, который ровно равен максимуму")
         void shouldReturnTrueWhenOrderEqualsMaxVolume() {
             var courier = createValidCourier();
-            var assignment = createAssignmentWithVolume(20);
+            var order = createOrderWithVolume(20);
 
-            assertTrue(courier.canTakeAssignment(assignment).getValue());
+            assertTrue(courier.canTakeOrder(order).getValue());
         }
 
         @Test
         @DisplayName("Должен возвращать false для заказа, который превышает максимум")
         void shouldReturnFalseWhenOrderExceedsMaxVolume() {
             var courier = createValidCourier();
-            var assignment = createAssignmentWithVolume(25);
+            var order = createOrderWithVolume(25);
 
-            assertFalse(courier.canTakeAssignment(assignment).getValue());
-        }
-
-        @Test
-        @DisplayName("Должен возвращать false при null объеме")
-        void shouldThrowExceptionWhenVolumeIsNull() {
-            var courier = createValidCourier();
-
-            assertThrows(NullPointerException.class, () -> courier.canTakeAssignment(null));
+            assertFalse(courier.canTakeOrder(order).getValue());
         }
     }
 
@@ -134,22 +126,21 @@ class CourierTest {
         @DisplayName("Должен успешно брать заказ в работу")
         void shouldTakeOrderSuccessfully() {
             var courier = createValidCourier();
-            var assignment = createValidAssignment();
+            var order = createValidOrder();
 
-            var result = courier.takeAssignment(assignment);
+            var result = courier.takeOrder(order);
 
             assertTrue(result.isSuccess());
             assertEquals(1, courier.getAssignments().size());
-            assertTrue(courier.getAssignments().contains(assignment));
         }
 
         @Test
         @DisplayName("Должен возвращать ошибку при попытке взять заказ, превышающий максимум")
         void shouldReturnErrorWhenOrderExceedsMaxVolume() {
             var courier = createValidCourier();
-            var assignment = createAssignmentWithVolume(25);
+            var order = createOrderWithVolume(25);
 
-            var result = courier.takeAssignment(assignment);
+            var result = courier.takeOrder(order);
 
             assertTrue(result.isFailure());
             assertNotNull(result.getError());
@@ -157,24 +148,16 @@ class CourierTest {
         }
 
         @Test
-        @DisplayName("Должен возвращать ошибку при null Assignment")
-        void shouldThrowExceptionWhenAssignmentIsNull() {
-            var courier = createValidCourier();
-
-            assertThrows(NullPointerException.class, () -> courier.takeAssignment(null));
-        }
-
-        @Test
         @DisplayName("Должен позволять взять несколько заказов в пределах максимума")
         void shouldAllowMultipleOrdersWithinMaxVolume() {
             var courier = createValidCourier();
-            var assignment1 = createAssignmentWithVolume(5);
-            var assignment2 = createAssignmentWithVolume(10);
-            var assignment3 = createAssignmentWithVolume(5);
+            var order1 = createOrderWithVolume(5);
+            var order2 = createOrderWithVolume(10);
+            var order3 = createOrderWithVolume(5);
 
-            assertTrue(courier.takeAssignment(assignment1).isSuccess());
-            assertTrue(courier.takeAssignment(assignment2).isSuccess());
-            assertTrue(courier.takeAssignment(assignment3).isSuccess());
+            assertTrue(courier.takeOrder(order1).isSuccess());
+            assertTrue(courier.takeOrder(order2).isSuccess());
+            assertTrue(courier.takeOrder(order3).isSuccess());
 
             assertEquals(3, courier.getAssignments().size());
             assertEquals(20, courier.getCurrentVolume().getValue());
@@ -184,13 +167,11 @@ class CourierTest {
         @DisplayName("Должен возвращать ошибку при превышении максимума после нескольких заказов")
         void shouldReturnErrorWhenAddingOrderExceedsMaxAfterMultipleOrders() {
             var courier = createValidCourier();
-            var assignment1 = createAssignmentWithVolume(10);
-            var assignment2 = createAssignmentWithVolume(15);
+            var order1 = createOrderWithVolume(10);
+            var order2 = createOrderWithVolume(15);
 
-            assertTrue(courier.takeAssignment(assignment1).isSuccess());
-            var result = courier.takeAssignment(assignment2);
-
-            assertTrue(result.isFailure());
+            assertTrue(courier.takeOrder(order1).isSuccess());
+            assertTrue(courier.takeOrder(order2).isFailure());
             assertEquals(1, courier.getAssignments().size());
         }
     }
@@ -200,38 +181,17 @@ class CourierTest {
     class CompleteAssignmentTests {
 
         @Test
-        @DisplayName("Должен возвращать ошибку при попытке завершить Assignment не из списка")
-        void shouldReturnErrorWhenAssignmentNotInList() {
-            var courier = createValidCourier();
-            var assignment = createValidAssignment();
-
-            var result = courier.completeAssignment(assignment);
-
-            assertTrue(result.isFailure());
-            assertNotNull(result.getError());
-        }
-
-        @Test
-        @DisplayName("Должен возвращать ошибку при null Assignment")
-        void shouldThrowExceptionWhenAssignmentIsNull() {
-            var courier = createValidCourier();
-
-            assertThrows(NullPointerException.class, () -> courier.completeAssignment(null));
-        }
-
-        @Test
         @DisplayName("Должен завершать Assignment только если курьер рядом (расстояние <= 1)")
         void shouldCompleteAssignmentOnlyWhenCourierIsNear() {
             var courierLocation = Location.create(1, 1);
             var courier = createValidCourierWithLocation(courierLocation.getValue());
             var orderLocation = Location.create(3, 4); // расстояние = 5
-            var assignment = createAssignmentWithLocation(orderLocation.getValue());
-            courier.takeAssignment(assignment);
+            var order = createOrderWithLocation(orderLocation.getValue());
+            courier.takeOrder(order);
 
-            var result = courier.completeAssignment(assignment);
+            var result = courier.completeAssignment();
 
-            assertTrue(result.isFailure());
-            assertNotNull(result.getError());
+            assertFalse(result);
             assertEquals(1, courier.getAssignments().size());
         }
 
@@ -241,12 +201,12 @@ class CourierTest {
             var locationResult = Location.create(5, 5);
             var location = locationResult.getValue();
             var courier = createValidCourierWithLocation(location);
-            var assignment = createAssignmentWithLocation(location);
-            courier.takeAssignment(assignment);
+            var order = createOrderWithLocation(location);
+            courier.takeOrder(order);
 
-            var result = courier.completeAssignment(assignment);
+            var result = courier.completeAssignment();
 
-            assertTrue(result.isSuccess());
+            assertTrue(result);
             assertTrue(courier.getAssignments().isEmpty());
         }
 
@@ -254,14 +214,14 @@ class CourierTest {
         @DisplayName("Должен завершать Assignment если курьер в соседней клетке (расстояние = 1)")
         void shouldCompleteAssignmentWhenCourierInAdjacentCell() {
             var courier = createValidCourierWithLocation(Location.create(5, 5).getValue());
-            var assignment = createAssignmentWithLocation(
+            var order = createOrderWithLocation(
                     // расстояние = 1
                     Location.create(5, 6).getValue());
 
-            courier.takeAssignment(assignment);
-            var result = courier.completeAssignment(assignment);
+            courier.takeOrder(order);
+            var result = courier.completeAssignment();
 
-            assertTrue(result.isSuccess());
+            assertTrue(result);
             assertTrue(courier.getAssignments().isEmpty());
         }
     }
@@ -315,29 +275,26 @@ class CourierTest {
         return courierResult.getValue();
     }
 
-    private Assignment createValidAssignment() {
+    private Order createValidOrder() {
         var id = UUID.randomUUID();
-        var orderId = UUID.randomUUID();
         var volumeResult = Volume.create(5);
         var locationResult = Location.create(5, 5);
-        var assignmentResult = Assignment.create(id, orderId, volumeResult.getValue(), locationResult.getValue());
-        return assignmentResult.getValue();
+        var orderResult = Order.create(id, locationResult.getValue(), volumeResult.getValue());
+        return orderResult.getValue();
     }
 
-    private Assignment createAssignmentWithVolume(int volume) {
+    private Order createOrderWithVolume(int volume) {
         var id = UUID.randomUUID();
-        var orderId = UUID.randomUUID();
         var volumeResult = Volume.create(volume);
         var locationResult = Location.create(5, 5);
-        var assignmentResult = Assignment.create(id, orderId, volumeResult.getValue(), locationResult.getValue());
-        return assignmentResult.getValue();
+        var orderResult = Order.create(id, locationResult.getValue(), volumeResult.getValue());
+        return orderResult.getValue();
     }
 
-    private Assignment createAssignmentWithLocation(Location location) {
+    private Order createOrderWithLocation(Location location) {
         var id = UUID.randomUUID();
-        var orderId = UUID.randomUUID();
         var volumeResult = Volume.create(5);
-        var assignmentResult = Assignment.create(id, orderId, volumeResult.getValue(), location);
-        return assignmentResult.getValue();
+        var orderResult = Order.create(id, location, volumeResult.getValue());
+        return orderResult.getValue();
     }
 }
