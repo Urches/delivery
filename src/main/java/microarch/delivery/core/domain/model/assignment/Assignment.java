@@ -6,6 +6,7 @@ import libs.errs.Error;
 import libs.util.ReasonedResult;
 import lombok.Getter;
 import microarch.delivery.core.domain.model.Location;
+import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.domain.model.order.Volume;
 
 import java.util.Objects;
@@ -26,8 +27,7 @@ public class Assignment extends BaseEntity<UUID> {
     private AssignmentStatus status;
 
     /**
-     * Конструктор для использования в фабричном методе create и в инфраструктуре (маппинг). Имеет видимость
-     * package-private для доступа из слоя persistence.
+     * Конструктор для использования в фабричном методе create и в инфраструктуре (маппинг).
      */
     private Assignment(UUID id, UUID orderId, Volume volume, Location location, AssignmentStatus status) {
         super(id);
@@ -35,6 +35,13 @@ public class Assignment extends BaseEntity<UUID> {
         this.volume = volume;
         this.location = location;
         this.status = status;
+    }
+
+    /**
+     * Создаёт Assignment с указанными параметрами. Используется инфраструктурой для восстановления из БД.
+     */
+    public static Assignment of(UUID id, UUID orderId, Volume volume, Location location, AssignmentStatus status) {
+        return new Assignment(id, orderId, volume, location, status);
     }
 
     /**
@@ -61,6 +68,10 @@ public class Assignment extends BaseEntity<UUID> {
         }
 
         return Result.success(new Assignment(id, orderId, volume, location, AssignmentStatus.ASSIGNED));
+    }
+
+    public static Assignment mustCreate(UUID id, UUID orderId, Volume volume, Location location) {
+        return create(id, orderId, volume, location).getValueOrThrow();
     }
 
     /**

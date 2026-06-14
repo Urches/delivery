@@ -25,14 +25,20 @@ public class Order extends Aggregate<UUID> {
     private OrderStatus status;
 
     /**
-     * Конструктор для использования в фабричном методе create и в инфраструктуре (маппинг). Имеет видимость
-     * package-private для доступа из слоя persistence.
+     * Конструктор для использования в фабричном методе create.
      */
     private Order(UUID id, Location location, Volume volume, OrderStatus status) {
         super(id);
         this.location = location;
         this.volume = volume;
         this.status = status;
+    }
+
+    /**
+     * Создаёт Order с указанным статусом. Используется инфраструктурой для восстановления из БД.
+     */
+    public static Order of(UUID id, Location location, Volume volume, OrderStatus status) {
+        return new Order(id, location, volume, status);
     }
 
     /**
@@ -46,7 +52,8 @@ public class Order extends Aggregate<UUID> {
      * @return Result с Order при успехе или Error при неудаче
      */
     public static Result<Order, Error> create(UUID id, Location location, Volume volume) {
-        var error = Guard.combine(Guard.againstNullOrEmpty(id, "id"),
+        var error = Guard.combine(
+                Guard.againstNullOrEmpty(id, "id"),
                 location == null ? GeneralErrors.valueIsRequired("location") : null,
                 volume == null ? GeneralErrors.valueIsRequired("volume") : null);
         if (error != null) {
@@ -54,6 +61,10 @@ public class Order extends Aggregate<UUID> {
         }
 
         return Result.success(new Order(id, location, volume, OrderStatus.CREATED));
+    }
+
+    public static Order mustCreate(UUID id, Location location, Volume volume) {
+        return create(id, location, volume).getValueOrThrow();
     }
 
     /**

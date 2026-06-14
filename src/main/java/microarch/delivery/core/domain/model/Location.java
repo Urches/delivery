@@ -44,6 +44,17 @@ public class Location extends ValueObject<Location> {
     }
 
     /**
+     * Фабричный метод для создания Location.
+     *
+     * @param x координата по горизонтали (от 1 до 10)
+     * @param y координата по вертикали (от 1 до 10)
+     * @return Location при успехе или Exception при неудаче
+     */
+    public static Location mustCreate(int x, int y) {
+        return create(x, y).getValueOrThrow();
+    }
+
+    /**
      * Рассчитывает расстояние до другой точки Location. Расстояние - это совокупное количество шагов по X и Y
      * (манхэттенское расстояние).
      *
