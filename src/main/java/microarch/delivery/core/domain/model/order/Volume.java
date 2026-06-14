@@ -38,6 +38,16 @@ public class Volume extends ValueObject<Volume> {
     }
 
     /**
+     * Фабричный метод для создания Volume.
+     *
+     * @param value значение объема (от 1 до 100)
+     * @return Volume при успехе или Exception при неудаче
+     */
+    public static Volume mustCreate(int value) {
+        return create(value).getValueOrThrow();
+    }
+
+    /**
      * Метод для создания нового Volume, содержащего value текущего Volume + value входного Volume.
      *
      * @param volume добавочное значение Volume

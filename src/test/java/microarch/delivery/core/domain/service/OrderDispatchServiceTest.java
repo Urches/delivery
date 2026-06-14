@@ -162,48 +162,43 @@ class OrderDispatchServiceTest {
     private Courier createValidCourier() {
         var id = UUID.randomUUID();
         var name = "Test Courier";
-        var locationResult = Location.create(5, 5);
-        return Courier.create(id, name, locationResult.getValue()).getValue();
+        var location = Location.mustCreate(5, 5);
+        return Courier.mustCreate(id, name, location);
     }
 
     private Courier createCourierWithLocation(Location location) {
         var id = UUID.randomUUID();
         var name = "Test Courier";
-        return Courier.create(id, name, location).getValue();
+        return Courier.mustCreate(id, name, location);
     }
 
     private Order createValidOrder() {
         var id = UUID.randomUUID();
-        var volumeResult = Volume.create(5);
-        var locationResult = Location.create(5, 5);
-        return Order.create(id, locationResult.getValue(), volumeResult.getValue()).getValue();
+        var volume = Volume.mustCreate(5);
+        var location = Location.mustCreate(5, 5);
+        return Order.mustCreate(id, location, volume);
     }
 
     private Order createOrderWithVolume(int volume) {
         var id = UUID.randomUUID();
-        var volumeResult = Volume.create(volume);
-        var locationResult = Location.create(5, 5);
-        return Order.create(id, locationResult.getValue(), volumeResult.getValue()).getValue();
+        return Order.mustCreate(id, Location.mustCreate(5, 5), Volume.mustCreate(volume));
     }
 
     private Order createOrderWithLocation(Location location) {
         var id = UUID.randomUUID();
-        var volumeResult = Volume.create(5);
-        return Order.create(id, location, volumeResult.getValue()).getValue();
+        return Order.mustCreate(id, location, Volume.mustCreate(5));
     }
 
     private Order createOrderWithVolumeAndLocation(int volume, Location location) {
         var id = UUID.randomUUID();
-        var volumeResult = Volume.create(volume);
-        return Order.create(id, location, volumeResult.getValue()).getValue();
+        return Order.mustCreate(id, location, Volume.mustCreate(volume));
     }
 
     private Order createOrderWithStatus(OrderStatus status) {
         var id = UUID.randomUUID();
-        var volumeResult = Volume.create(5);
-        var locationResult = Location.create(5, 5);
-        var orderResult = Order.create(id, locationResult.getValue(), volumeResult.getValue());
-        var order = orderResult.getValue();
+        var volume = Volume.mustCreate(5);
+        var location = Location.mustCreate(5, 5);
+        var order = Order.mustCreate(id, location, volume);
         if (status == OrderStatus.ASSIGNED) {
             order.assign();
         } else if (status == OrderStatus.COMPLETED) {
