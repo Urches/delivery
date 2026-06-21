@@ -28,15 +28,15 @@ public class Location extends ValueObject<Location> {
     /**
      * Фабричный метод для создания Location.
      *
-     * @param x
-     *            координата по горизонтали (от 1 до 10)
-     * @param y
-     *            координата по вертикали (от 1 до 10)
-     *
+     * @param x координата по горизонтали (от 1 до 10)
+     * @param y координата по вертикали (от 1 до 10)
      * @return Result с Location при успехе или Error при неудаче
      */
     public static Result<Location, Error> create(int x, int y) {
-        var error = validateCoordinates(x, y);
+        var error = Guard.combine(
+                Guard.againstOutOfRange(x, MIN_COORDINATE, MAX_COORDINATE, "x"),
+                Guard.againstOutOfRange(y, MIN_COORDINATE, MAX_COORDINATE, "y"));
+
         if (error != null) {
             return Result.failure(error);
         }
@@ -47,30 +47,12 @@ public class Location extends ValueObject<Location> {
      * Рассчитывает расстояние до другой точки Location. Расстояние - это совокупное количество шагов по X и Y
      * (манхэттенское расстояние).
      *
-     * @param other
-     *            другая точка Location
-     *
+     * @param other другая точка Location
      * @return количество шагов, необходимых для достижения точки other
      */
     public int distanceTo(Location other) {
         Objects.requireNonNull(other, "Other location must not be null");
         return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
-    }
-
-    /**
-     * Проверяет валидность координат.
-     *
-     * @param x
-     *            координата X
-     * @param y
-     *            координата Y
-     *
-     * @return Error если координаты невалидны, null если валидны
-     */
-    private static Error validateCoordinates(int x, int y) {
-        var xError = Guard.againstOutOfRange(x, MIN_COORDINATE, MAX_COORDINATE, "x");
-        var yError = Guard.againstOutOfRange(y, MIN_COORDINATE, MAX_COORDINATE, "y");
-        return Guard.combine(xError, yError);
     }
 
     @Override

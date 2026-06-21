@@ -50,7 +50,12 @@ public class Assignment extends BaseEntity<UUID> {
      * @return Result с Assignment при успехе или Error при неудаче
      */
     public static Result<Assignment, Error> create(UUID id, UUID orderId, Volume volume, Location location) {
-        var error = validate(id, orderId, volume, location);
+        var error = Guard.combine(
+                Guard.againstNullOrEmpty(id, "id"),
+                Guard.againstNullOrEmpty(orderId, "orderId"),
+                volume == null ? GeneralErrors.valueIsRequired("volume") : null,
+                location == null ? GeneralErrors.valueIsRequired("location") : null);
+
         if (error != null) {
             return Result.failure(error);
         }
@@ -101,23 +106,5 @@ public class Assignment extends BaseEntity<UUID> {
                     String.format("Courier is too far from order location. Distance: %d, max allowed: 1", distance));
         }
         return ReasonedResult.withNoReason(true);
-    }
-
-    /**
-     * Валидация параметров при создании Assignment.
-     *
-     * @param id       уникальный идентификатор
-     * @param orderId  идентификатор заказа
-     * @param volume   объем заказа
-     * @param location местоположение
-     * @return Error если валидация не пройдена, null если все валидно
-     */
-    private static Error validate(UUID id, UUID orderId, Volume volume, Location location) {
-        var idError = Guard.againstNullOrEmpty(id, "id");
-        var orderIdError = Guard.againstNullOrEmpty(orderId, "orderId");
-        var volumeError = (volume == null) ? GeneralErrors.valueIsRequired("volume") : null;
-        var locationError = (location == null) ? GeneralErrors.valueIsRequired("location") : null;
-
-        return Guard.combine(idError, orderIdError, volumeError, locationError);
     }
 }

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import libs.errs.Error;
+
 /**
  * Результат со списком причин/комментариев к полученному результату.
  * <p>
@@ -34,6 +36,12 @@ public class ReasonedResult<T> {
         Objects.requireNonNull(value);
         Objects.requireNonNull(reason);
         return new ReasonedResult<>(value, List.of(reason));
+    }
+
+    public static <T> ReasonedResult<T> withReason(T value, Error error) {
+        Objects.requireNonNull(value);
+        Objects.requireNonNull(error);
+        return new ReasonedResult<>(value, List.of(error.getMessage()));
     }
 
     public static <T> ReasonedResult<T> withReasons(T value, List<String> reasons) {
