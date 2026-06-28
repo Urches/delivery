@@ -54,9 +54,11 @@ public class OrderDispatchServiceImpl implements OrderDispatchService {
 
         var orderLocation = order.getLocation();
 
-        return couriers.stream().map(courier -> Objects.requireNonNull(courier, "Courier must not be null"))
+        return couriers.stream()
+                .map(courier -> Objects.requireNonNull(courier, "Courier must not be null"))
                 .filter(courier -> courier.canTakeOrder(order).getValue())
-                .min(Comparator.comparingInt(c -> c.getLocation().distanceTo(orderLocation))).map(Result::success)
+                .min(Comparator.comparingInt(c -> c.getLocation().distanceTo(orderLocation)))
+                .map(Result::success)
                 .orElse(Result.failure(GeneralErrors.invalidOperation("All couriers are unavailable or too busy")));
     }
 

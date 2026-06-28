@@ -53,11 +53,13 @@ public class CourierJpaEntity {
     }
 
     public static CourierJpaEntity fromDomain(Courier courier) {
+        var location = courier.getLocation();
+        var volume = courier.getMaxVolume();
         var entity = new CourierJpaEntity(courier.getId(),
                 courier.getName(),
-                courier.getLocation().getX(),
-                courier.getLocation().getY(),
-                courier.getMaxVolume().getValue());
+                location.getX(),
+                location.getY(),
+                volume.getValue());
 
         var assignmentEntities = courier.getAssignments()
                 .stream()
@@ -70,8 +72,8 @@ public class CourierJpaEntity {
     }
 
     public Courier toDomain() {
-        var location = Location.create(locationX, locationY).getValueOrThrow();
-        var domainVolume = Volume.create(maxVolume).getValueOrThrow();
+        var location = Location.mustCreate(locationX, locationY);
+        var domainVolume = Volume.mustCreate(maxVolume);
         var domainAssignments = assignments
                 .stream()
                 .map(AssignmentJpaEntity::toDomain)

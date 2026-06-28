@@ -33,7 +33,8 @@ public class Location extends ValueObject<Location> {
      * @return Result с Location при успехе или Error при неудаче
      */
     public static Result<Location, Error> create(int x, int y) {
-        var error = Guard.combine(Guard.againstOutOfRange(x, MIN_COORDINATE, MAX_COORDINATE, "x"),
+        var error = Guard.combine(
+                Guard.againstOutOfRange(x, MIN_COORDINATE, MAX_COORDINATE, "x"),
                 Guard.againstOutOfRange(y, MIN_COORDINATE, MAX_COORDINATE, "y"));
 
         if (error != null) {

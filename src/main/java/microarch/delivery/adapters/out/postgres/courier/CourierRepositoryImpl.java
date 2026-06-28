@@ -38,7 +38,8 @@ public class CourierRepositoryImpl implements CourierRepository {
 
     @Override
     public Optional<Courier> getById(UUID id) {
-        return jpaRepository.findById(id).map(CourierJpaEntity::toDomain);
+        return jpaRepository.findById(id)
+                .map(CourierJpaEntity::toDomain);
     }
 
     @Override

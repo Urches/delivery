@@ -1,11 +1,6 @@
 package microarch.delivery.adapters.out.postgres.order;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import microarch.delivery.core.domain.model.Location;
@@ -48,12 +43,18 @@ public class OrderJpaEntity {
 
     public static OrderJpaEntity fromDomain(Order order) {
         var location = order.getLocation();
-        return new OrderJpaEntity(order.getId(), location.getX(), location.getY(), order.getVolume().getValue(),
+        var volume = order.getVolume();
+        return new OrderJpaEntity(
+                order.getId(),
+                location.getX(),
+                location.getY(),
+                volume.getValue(),
                 order.getStatus());
     }
 
     public Order toDomain() {
-        return Order.of(id, Location.create(locationX, locationY).getValueOrThrow(),
-                Volume.create(volume).getValueOrThrow(), status);
+        var location = Location.mustCreate(locationX, locationY);
+        var volume = Volume.mustCreate(this.volume);
+        return Order.of(id, location, volume, status);
     }
 }
