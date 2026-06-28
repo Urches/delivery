@@ -28,9 +28,7 @@ class OrderRepositoryIntegrationTest extends PostgresIntegrationTestBase {
     @Test
     @DisplayName("Должен добавлять заказ в базу данных")
     void shouldSaveOrder() {
-        var location = Location.mustCreate(5, 5);
-        var volume = Volume.mustCreate(10);
-        var order = Order.of(UUID.randomUUID(), location, volume, OrderStatus.CREATED);
+        var order = Order.mustCreate(UUID.randomUUID(), Location.mustCreate(5, 5), Volume.mustCreate(10));
 
         orderRepository.save(order);
 
@@ -42,9 +40,7 @@ class OrderRepositoryIntegrationTest extends PostgresIntegrationTestBase {
     @Test
     @DisplayName("Должен обновлять существующий заказ")
     void shouldUpdateOrder() {
-        var location = Location.mustCreate(3, 3);
-        var volume = Volume.mustCreate(15);
-        var order = Order.of(UUID.randomUUID(), location, volume, OrderStatus.CREATED);
+        var order = Order.mustCreate(UUID.randomUUID(), Location.mustCreate(3, 3), Volume.mustCreate(15));
 
         orderRepository.save(order);
         order.assign();
@@ -59,10 +55,8 @@ class OrderRepositoryIntegrationTest extends PostgresIntegrationTestBase {
     @Test
     @DisplayName("Должен получать заказ по идентификатору")
     void shouldGetOrderById() {
-        var location = Location.mustCreate(7, 7);
-        var volume = Volume.mustCreate(20);
         var id = UUID.randomUUID();
-        var order = Order.of(id, location, volume, OrderStatus.CREATED);
+        var order = Order.mustCreate(id, Location.mustCreate(7, 7), Volume.mustCreate(20));
 
         orderRepository.save(order);
         var getResult = orderRepository.getById(id);
@@ -83,9 +77,7 @@ class OrderRepositoryIntegrationTest extends PostgresIntegrationTestBase {
     @Test
     @DisplayName("Должен получать один новый заказ (CREATED)")
     void shouldGetOneNewOrder() {
-        var location = Location.mustCreate(2, 2);
-        var volume = Volume.mustCreate(5);
-        var order = Order.of(UUID.randomUUID(), location, volume, OrderStatus.CREATED);
+        var order = Order.mustCreate(UUID.randomUUID(), Location.mustCreate(2, 2), Volume.mustCreate(5));
 
         orderRepository.save(order);
         var result = orderRepository.getOneNew();
@@ -105,14 +97,10 @@ class OrderRepositoryIntegrationTest extends PostgresIntegrationTestBase {
     @Test
     @DisplayName("Должен получать все назначенные заказы (ASSIGNED)")
     void shouldGetAllAssignedOrders() {
-        var location1 = Location.mustCreate(1, 1);
-        var volume1 = Volume.mustCreate(8);
-        var order1 = Order.of(UUID.randomUUID(), location1, volume1, OrderStatus.CREATED);
+        var order1 = Order.mustCreate(UUID.randomUUID(), Location.mustCreate(1, 1), Volume.mustCreate(8));
         order1.assign();
 
-        var location2 = Location.mustCreate(4, 4);
-        var volume2 = Volume.mustCreate(12);
-        var order2 = Order.of(UUID.randomUUID(), location2, volume2, OrderStatus.CREATED);
+        var order2 = Order.mustCreate(UUID.randomUUID(), Location.mustCreate(4, 4), Volume.mustCreate(12));
         order2.assign();
 
         orderRepository.save(order1);
@@ -135,10 +123,8 @@ class OrderRepositoryIntegrationTest extends PostgresIntegrationTestBase {
     @Test
     @DisplayName("Должен получать заказ после обновления статуса на ASSIGNED")
     void shouldGetOrderAfterStatusChangeToAssigned() {
-        var location = Location.mustCreate(6, 6);
-        var volume = Volume.mustCreate(25);
         var id = UUID.randomUUID();
-        var order = Order.of(id, location, volume, OrderStatus.CREATED);
+        var order = Order.mustCreate(id, Location.mustCreate(6, 6), Volume.mustCreate(25));
 
         orderRepository.save(order);
 
@@ -157,10 +143,8 @@ class OrderRepositoryIntegrationTest extends PostgresIntegrationTestBase {
     @Test
     @DisplayName("Должен получать заказ после обновления статуса на COMPLETED")
     void shouldGetOrderAfterStatusChangeToCompleted() {
-        var location = Location.mustCreate(8, 8);
-        var volume = Volume.mustCreate(30);
         var id = UUID.randomUUID();
-        var order = Order.of(id, location, volume, OrderStatus.CREATED);
+        var order = Order.mustCreate(id, Location.mustCreate(8, 8), Volume.mustCreate(30));
 
         orderRepository.save(order);
         order.assign();
@@ -176,9 +160,7 @@ class OrderRepositoryIntegrationTest extends PostgresIntegrationTestBase {
     @DisplayName("Должен получать все назначенные заказы после множественного добавления")
     void shouldGetAllAssignedOrdersAfterMultipleAdds() {
         for (int i = 1; i <= 5; i++) {
-            var location = Location.mustCreate(i, i);
-            var volume = Volume.mustCreate(i + 1);
-            var order = Order.of(UUID.randomUUID(), location, volume, OrderStatus.CREATED);
+            var order = Order.mustCreate(UUID.randomUUID(), Location.mustCreate(i, i), Volume.mustCreate(i + 1));
             order.assign();
             orderRepository.save(order);
         }

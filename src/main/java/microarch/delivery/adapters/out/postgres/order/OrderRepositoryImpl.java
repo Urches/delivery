@@ -51,7 +51,8 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public List<Order> getAllAssigned() {
         return jpaRepository.findAssignedOrders()
-                .stream().map(OrderJpaEntity::toDomain)
+                .stream()
+                .map(OrderJpaEntity::toDomain)
                 .toList();
     }
 }
