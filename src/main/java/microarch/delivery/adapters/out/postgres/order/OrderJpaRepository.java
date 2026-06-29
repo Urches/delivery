@@ -14,4 +14,7 @@ public interface OrderJpaRepository extends JpaRepository<OrderJpaEntity, UUID> 
 
     @Query(value = "SELECT o FROM OrderJpaEntity o WHERE o.status = 'ASSIGNED'")
     List<OrderJpaEntity> findAssignedOrders();
+
+    @Query(value = "SELECT o FROM OrderJpaEntity o WHERE o.status IN ('CREATED', 'ASSIGNED')")
+    List<OrderJpaEntity> findNotCompletedOrders();
 }

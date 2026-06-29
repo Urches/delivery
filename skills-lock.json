@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "write-code": {
+      "source": "ssh://git@gitlabci.raiffeisen.ru:7999/it-community/ai/skills.git",
+      "sourceType": "git",
+      "skillPath": "skills/jvm/write-code/SKILL.md",
+      "computedHash": "3e4aa5b29c6d7956cfc9d7c46436afbfa1657852355d9636e8367f684ae6af0f"
+    }
+  }
+}

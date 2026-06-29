@@ -1,0 +1,69 @@
+package microarch.delivery.config;
+
+import microarch.delivery.core.application.command.assignment.AssignOrderCommandHandler;
+import microarch.delivery.core.application.command.assignment.CompleteOrderCommandHandler;
+import microarch.delivery.core.application.command.courier.CreateCourierCommandHandler;
+import microarch.delivery.core.application.command.courier.MoveCourierCommandHandler;
+import microarch.delivery.core.application.command.order.CreateOrderCommandHandler;
+import microarch.delivery.core.application.query.courier.GetAllCouriersQueryHandler;
+import microarch.delivery.core.application.query.order.GetNotCompletedOrdersQueryHandler;
+import microarch.delivery.core.domain.service.OrderDispatchService;
+import microarch.delivery.core.ports.CourierRepository;
+import microarch.delivery.core.ports.OrderRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.Random;
+
+/**
+ * Конфигурация для всех Use Case обработчиков (Command Handlers и Query Handlers).
+ */
+@Configuration
+public class ApplicationServiceConfig {
+
+    // Command Handlers
+
+    @Bean
+    public Random random() {
+        return new Random();
+    }
+
+    @Bean
+    public CreateOrderCommandHandler createOrderCommandHandler(OrderRepository orderRepository, Random random) {
+        return new CreateOrderCommandHandler(orderRepository, random);
+    }
+
+    @Bean
+    public CreateCourierCommandHandler createCourierCommandHandler(CourierRepository courierRepository, Random random) {
+        return new CreateCourierCommandHandler(courierRepository, random);
+    }
+
+    @Bean
+    public MoveCourierCommandHandler moveCourierCommandHandler(CourierRepository courierRepository) {
+        return new MoveCourierCommandHandler(courierRepository);
+    }
+
+    @Bean
+    public AssignOrderCommandHandler assignOrderCommandHandler(OrderRepository orderRepository,
+            CourierRepository courierRepository, OrderDispatchService dispatchService) {
+        return new AssignOrderCommandHandler(orderRepository, courierRepository, dispatchService);
+    }
+
+    @Bean
+    public CompleteOrderCommandHandler completeOrderCommandHandler(CourierRepository courierRepository,
+            OrderRepository orderRepository) {
+        return new CompleteOrderCommandHandler(courierRepository, orderRepository);
+    }
+
+    // Query Handlers
+
+    @Bean
+    public GetAllCouriersQueryHandler getAllCouriersQueryHandler(CourierRepository courierRepository) {
+        return new GetAllCouriersQueryHandler(courierRepository);
+    }
+
+    @Bean
+    public GetNotCompletedOrdersQueryHandler getNotCompletedOrdersQueryHandler(OrderRepository orderRepository) {
+        return new GetNotCompletedOrdersQueryHandler(orderRepository);
+    }
+}

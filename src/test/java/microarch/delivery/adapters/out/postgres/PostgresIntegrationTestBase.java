@@ -12,9 +12,7 @@ public abstract class PostgresIntegrationTestBase {
     @SuppressWarnings("resource")
     @Container
     protected static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:15.3")
-            .withDatabaseName("testdb")
-            .withUsername("test")
-            .withPassword("test");
+            .withDatabaseName("testdb").withUsername("test").withPassword("test");
 
     @DynamicPropertySource
     static void configureDatasource(DynamicPropertyRegistry registry) {
