@@ -5,7 +5,7 @@ import libs.errs.Result;
 import lombok.RequiredArgsConstructor;
 import microarch.delivery.core.application.QueryHandler;
 import microarch.delivery.core.application.query.dto.CourierDto;
-import microarch.delivery.core.domain.model.courier.Courier;
+import microarch.delivery.core.application.query.dto.CourierDto;
 import microarch.delivery.core.ports.CourierRepository;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class GetAllCouriersQueryHandler implements QueryHandler<GetAllCouriersQu
 
         // Преобразуем в DTO
         var result = couriers.stream()
-                .map(courier -> new CourierDto(courier.getId(), courier.getName(), courier.getLocation()))
+                .map(CourierDto::from)
                 .collect(Collectors.toList());
 
         return Result.success(result);

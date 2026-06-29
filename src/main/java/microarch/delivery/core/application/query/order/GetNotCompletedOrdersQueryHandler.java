@@ -25,7 +25,7 @@ public class GetNotCompletedOrdersQueryHandler implements QueryHandler<GetNotCom
 
         // Преобразуем в DTO
         var result = orders.stream()
-                .map(order -> new OrderDto(order.getId(), order.getLocation()))
+                .map(OrderDto::from)
                 .collect(Collectors.toList());
 
         return Result.success(result);
