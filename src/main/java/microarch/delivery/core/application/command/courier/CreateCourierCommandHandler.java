@@ -24,13 +24,19 @@ public class CreateCourierCommandHandler implements CommandHandler<CreateCourier
         // Создаем рандомную Location для курьера
         var randomX = random.nextInt(10) + 1; // от 1 до 10
         var randomY = random.nextInt(10) + 1; // от 1 до 10
-        var location = Location.mustCreate(randomX, randomY);
+        var location = Location.create(randomX, randomY);
+        if (location.isFailure()) {
+            return Result.failure(location.getError());
+        }
 
         // Создаем курьера
-        var courier = Courier.mustCreate(command.courierId(), command.name(), location);
+        var courier = Courier.create(command.courierId(), command.name(), location.getValue());
+        if (courier.isFailure()) {
+            return Result.failure(courier.getError());
+        }
 
         // Сохраняем курьера в репозиторий
-        courierRepository.save(courier);
+        courierRepository.save(courier.getValue());
 
         return Result.success();
     }
