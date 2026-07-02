@@ -18,8 +18,7 @@ public class AssignOrderJob {
     @Scheduled(fixedDelay = 1000) // Запускается каждую 1 секунду
     public void run() {
         try {
-            var result = AssignOrderCommand.create()
-                    .flatMap(assignOrderCommandHandler::handle);
+            var result = AssignOrderCommand.create().flatMap(assignOrderCommandHandler::handle);
             if (result.isFailure()) {
                 // Логгируем ошибку, но не прерываем выполнение
                 System.err.println("Failed to assign order: " + result.getError().getMessage());

@@ -3,7 +3,6 @@ package microarch.delivery.adapters.in.http;
 import lombok.RequiredArgsConstructor;
 import microarch.delivery.adapters.in.http.api.CompleteOrderApi;
 import microarch.delivery.core.application.command.assignment.CompleteOrderCommand;
-import microarch.delivery.core.application.CommandHandler;
 import microarch.delivery.core.application.command.assignment.CompleteOrderCommandHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +21,7 @@ public class CompleteOrderController implements CompleteOrderApi {
 
     @Override
     public ResponseEntity<Void> completeOrder(UUID courierId, UUID orderId) {
-        var result = CompleteOrderCommand.create(courierId, orderId)
-                .flatMap(completeOrderCommandHandler::handle);
+        var result = CompleteOrderCommand.create(courierId, orderId).flatMap(completeOrderCommandHandler::handle);
 
         if (result.isFailure()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();

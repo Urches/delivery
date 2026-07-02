@@ -22,14 +22,9 @@ public class GetCouriersController implements GetCouriersApi {
 
     @Override
     public ResponseEntity<List<Courier>> getCouriers() {
-        var result = GetAllCouriersQuery.create()
-                .flatMap(getAllCouriersQueryHandler::handle);
-
-        if (result.isFailure()) {
-            return ResponseEntity.status(500).body(null);
-        }
-
-        var couriers = HttpMapper.toHttpCouriers(result.getValue());
-        return ResponseEntity.ok(couriers);
+        var couriers = GetAllCouriersQuery.create()
+                .flatMap(getAllCouriersQueryHandler::handle)
+                .getValueOrThrow();
+        return ResponseEntity.ok(HttpMapper.toHttpCouriers(couriers));
     }
 }

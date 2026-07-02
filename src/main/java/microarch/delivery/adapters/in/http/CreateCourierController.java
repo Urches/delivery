@@ -21,8 +21,7 @@ public class CreateCourierController implements CreateCourierApi {
 
     @Override
     public ResponseEntity<CreateCourierResponse> createCourier(NewCourier newCourier) {
-        var result = CreateCourierCommand.create(newCourier.getName())
-                .flatMap(createCourierCommandHandler::handle);
+        var result = CreateCourierCommand.create(newCourier.getName()).flatMap(createCourierCommandHandler::handle);
 
         if (result.isFailure()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -30,8 +29,7 @@ public class CreateCourierController implements CreateCourierApi {
 
         // Возвращаем успешный ответ
         var courier = result.getValue();
-        var response = new CreateCourierResponse()
-                .courierId(courier.getId());
+        var response = new CreateCourierResponse().courierId(courier.getId());
         return ResponseEntity.status(201).body(response);
     }
 }

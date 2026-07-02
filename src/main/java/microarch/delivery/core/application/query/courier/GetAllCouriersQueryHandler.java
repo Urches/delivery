@@ -22,9 +22,7 @@ public class GetAllCouriersQueryHandler {
         var couriers = courierRepository.getAll();
 
         // Преобразуем в DTO
-        var result = couriers.stream()
-                .map(CourierDto::from)
-                .collect(Collectors.toList());
+        var result = couriers.stream().map(CourierDto::from).collect(Collectors.toList());
 
         return Result.success(result);
     }

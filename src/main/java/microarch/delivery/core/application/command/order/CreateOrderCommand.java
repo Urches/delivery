@@ -27,7 +27,8 @@ public final class CreateOrderCommand {
 
     private static final Location DEFAULT_LOCATION = Location.mustCreate(1, 1);
 
-    public static Result<CreateOrderCommand, Error> create(UUID orderId, String country, String city, String street, String house, String apartment, int volume) {
+    public static Result<CreateOrderCommand, Error> create(UUID orderId, String country, String city, String street,
+            String house, String apartment, int volume) {
         var volumeResult = Volume.create(volume);
         var error = Guard.combine(Guard.againstNullOrEmpty(orderId, "orderId"),
                 Guard.againstNullOrEmpty(country, "country"), Guard.againstNullOrEmpty(city, "city"),
