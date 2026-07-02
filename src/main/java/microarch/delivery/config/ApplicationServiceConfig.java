@@ -9,6 +9,7 @@ import microarch.delivery.core.application.query.courier.GetAllCouriersQueryHand
 import microarch.delivery.core.application.query.order.GetNotCompletedOrdersQueryHandler;
 import microarch.delivery.core.domain.service.OrderDispatchService;
 import microarch.delivery.core.ports.CourierRepository;
+import microarch.delivery.core.ports.GeoClientPort;
 import microarch.delivery.core.ports.OrderRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +30,9 @@ public class ApplicationServiceConfig {
     }
 
     @Bean
-    public CreateOrderCommandHandler createOrderCommandHandler(OrderRepository orderRepository) {
-        return new CreateOrderCommandHandler(orderRepository);
+    public CreateOrderCommandHandler createOrderCommandHandler(OrderRepository orderRepository,
+            GeoClientPort geoClientPort) {
+        return new CreateOrderCommandHandler(orderRepository, geoClientPort);
     }
 
     @Bean

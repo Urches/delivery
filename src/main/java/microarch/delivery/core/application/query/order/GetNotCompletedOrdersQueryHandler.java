@@ -22,9 +22,7 @@ public class GetNotCompletedOrdersQueryHandler {
         var orders = orderRepository.getAllNotCompleted();
 
         // Преобразуем в DTO
-        var result = orders.stream()
-                .map(OrderDto::from)
-                .collect(Collectors.toList());
+        var result = orders.stream().map(OrderDto::from).collect(Collectors.toList());
 
         return Result.success(result);
     }

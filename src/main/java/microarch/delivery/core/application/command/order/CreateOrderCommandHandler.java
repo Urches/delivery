@@ -3,12 +3,9 @@ package microarch.delivery.core.application.command.order;
 import libs.errs.Error;
 import libs.errs.Result;
 import lombok.RequiredArgsConstructor;
-import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.order.Order;
-import microarch.delivery.core.domain.model.order.Volume;
+import microarch.delivery.core.ports.GeoClientPort;
 import microarch.delivery.core.ports.OrderRepository;
-
-import java.util.Random;
 
 /**
  * Обработчик команды на создание заказа.
@@ -17,16 +14,26 @@ import java.util.Random;
 public class CreateOrderCommandHandler {
 
     private final OrderRepository orderRepository;
+    private final GeoClientPort geoClientPort;
 
-    public Result<Void, Error> handle(CreateOrderCommand command) {
-        // Создаем заказ
-        var order = Order.create(command.getOrderId(), command.getLocation(), command.getVolume());
-        if (order.isFailure()) {
-            return Result.failure(order.getError());
+    public Result<Order, Error> handle(CreateOrderCommand command) {
+        // Получаем Location из Geo сервиса по адресу улицы
+        var locationResult = geoClientPort.getGeolocationByStreet(command.getStreet());
+        if (locationResult.isFailure()) {
+            return Result.failure(locationResult.getError());
+        }
+
+        var location = locationResult.getValue();
+
+        // Создаем заказ с полученным Location
+        var orderResult = Order.create(command.getOrderId(), location, command.getVolume());
+        if (orderResult.isFailure()) {
+            return Result.failure(orderResult.getError());
         }
 
         // Сохраняем заказ в репозиторий
-        orderRepository.save(order.getValue());
-        return Result.success();
+        var order = orderResult.getValue();
+        orderRepository.save(order);
+        return Result.success(order);
     }
 }
