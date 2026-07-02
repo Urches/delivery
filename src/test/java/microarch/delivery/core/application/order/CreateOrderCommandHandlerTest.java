@@ -49,8 +49,7 @@ class CreateOrderCommandHandlerTest {
         // Assert
         assertThat(result.isSuccess()).isTrue();
 
-        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor
-                .forClass(Order.class);
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
         verify(orderRepository, times(1)).save(orderCaptor.capture());
 
         Order savedOrder = orderCaptor.getValue();
