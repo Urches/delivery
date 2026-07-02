@@ -17,14 +17,11 @@ public final class CreateCourierCommand {
     private final UUID courierId;
     private final String name;
 
-    public static Result<CreateCourierCommand, Error> create(UUID courierId, String name) {
-        var error = Guard.combine(
-                Guard.againstNullOrEmpty(courierId, "courierId"),
-                Guard.againstNullOrEmpty(name, "name")
-        );
+    public static Result<CreateCourierCommand, Error> create(String name) {
+        var error = Guard.againstNullOrEmpty(name, "name");
         if (error != null) {
             return Result.failure(error);
         }
-        return Result.success(new CreateCourierCommand(courierId, name));
+        return Result.success(new CreateCourierCommand(UUID.randomUUID(), name));
     }
 }
