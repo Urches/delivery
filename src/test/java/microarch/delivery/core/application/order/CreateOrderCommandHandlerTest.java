@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import libs.errs.Result;
 import microarch.delivery.core.application.command.order.CreateOrderCommand;
 import microarch.delivery.core.application.command.order.CreateOrderCommandHandler;
+import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.order.OrderStatus;
 import microarch.delivery.core.ports.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,16 +44,16 @@ class CreateOrderCommandHandlerTest {
                 .getValueOrThrow();
 
         // Act
-        Result<Void, ?> result = handler.handle(command);
+        Result<Order, ?> result = handler.handle(command);
 
         // Assert
         assertThat(result.isSuccess()).isTrue();
 
-        ArgumentCaptor<microarch.delivery.core.domain.model.order.Order> orderCaptor = ArgumentCaptor
-                .forClass(microarch.delivery.core.domain.model.order.Order.class);
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor
+                .forClass(Order.class);
         verify(orderRepository, times(1)).save(orderCaptor.capture());
 
-        microarch.delivery.core.domain.model.order.Order savedOrder = orderCaptor.getValue();
+        Order savedOrder = orderCaptor.getValue();
         assertThat(savedOrder.getId()).isEqualTo(orderId);
         assertThat(savedOrder.getVolume().getValue()).isEqualTo(5);
         assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.CREATED);
@@ -68,8 +69,8 @@ class CreateOrderCommandHandlerTest {
                 .create(UUID.randomUUID(), "Russia", "Moscow", "Street2", "2", "2", 15).getValueOrThrow();
 
         // Act
-        Result<Void, ?> result1 = handler.handle(command1);
-        Result<Void, ?> result2 = handler.handle(command2);
+        Result<Order, ?> result1 = handler.handle(command1);
+        Result<Order, ?> result2 = handler.handle(command2);
 
         // Assert
         assertThat(result1.isSuccess()).isTrue();

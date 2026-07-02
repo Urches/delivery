@@ -24,14 +24,8 @@ public class CreateOrderController implements CreateOrderApi {
     public ResponseEntity<CreateOrderResponse> createOrder(NewOrder newOrder) {
         // Преобразуем HTTP модель в команду
         var address = newOrder.getAddress();
-        var command = CreateOrderCommand.create(
-                        newOrder.getId(),
-                        address.getCountry(),
-                        address.getCity(),
-                        address.getStreet(),
-                        address.getHouse(),
-                        address.getApartment(),
-                        newOrder.getVolume())
+        var command = CreateOrderCommand.create(newOrder.getId(), address.getCountry(), address.getCity(),
+                address.getStreet(), address.getHouse(), address.getApartment(), newOrder.getVolume())
                 .getValueOrThrow();
 
         // Выполняем команду
@@ -43,8 +37,7 @@ public class CreateOrderController implements CreateOrderApi {
 
         // Возвращаем успешный ответ
         var order = result.getValue();
-        var response = new CreateOrderResponse()
-                .orderId(order.getId());
+        var response = new CreateOrderResponse().orderId(order.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

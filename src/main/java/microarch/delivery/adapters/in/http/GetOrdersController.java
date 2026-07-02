@@ -23,8 +23,7 @@ public class GetOrdersController implements GetOrdersApi {
 
     @Override
     public ResponseEntity<List<Order>> getOrders() {
-        var orders = GetNotCompletedOrdersQuery.create()
-                .flatMap(getNotCompletedOrdersQueryHandler::handle)
+        var orders = GetNotCompletedOrdersQuery.create().flatMap(getNotCompletedOrdersQueryHandler::handle)
                 .getValueOrThrow();
         return ResponseEntity.ok(HttpMapper.toHttpOrders(orders));
     }
