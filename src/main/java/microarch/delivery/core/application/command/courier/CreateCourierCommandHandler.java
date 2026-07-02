@@ -18,7 +18,7 @@ public class CreateCourierCommandHandler {
     private final CourierRepository courierRepository;
     private final Random random;
 
-    public Result<Void, Error> handle(CreateCourierCommand command) {
+    public Result<Courier, Error> handle(CreateCourierCommand command) {
         // Создаем рандомную Location для курьера
         var randomX = random.nextInt(10) + 1; // от 1 до 10
         var randomY = random.nextInt(10) + 1; // от 1 до 10
@@ -28,14 +28,15 @@ public class CreateCourierCommandHandler {
         }
 
         // Создаем курьера
-        var courier = Courier.create(command.getCourierId(), command.getName(), location.getValue());
-        if (courier.isFailure()) {
-            return Result.failure(courier.getError());
+        var courierResult = Courier.create(command.getCourierId(), command.getName(), location.getValue());
+        if (courierResult.isFailure()) {
+            return Result.failure(courierResult.getError());
         }
 
         // Сохраняем курьера в репозиторий
-        courierRepository.save(courier.getValue());
+        var courier = courierResult.getValue();
+        courierRepository.save(courier);
 
-        return Result.success();
+        return Result.success(courier);
     }
 }
