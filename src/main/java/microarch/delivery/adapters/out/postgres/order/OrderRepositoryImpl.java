@@ -38,22 +38,17 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public Optional<Order> getById(UUID id) {
-        return jpaRepository.findById(id)
-                .map(OrderJpaEntity::toDomain);
+        return jpaRepository.findById(id).map(OrderJpaEntity::toDomain);
     }
 
     @Override
     public Optional<Order> getOneNew() {
-        return jpaRepository.findAnyNewOrder()
-                .map(OrderJpaEntity::toDomain);
+        return jpaRepository.findAnyNewOrder().map(OrderJpaEntity::toDomain);
     }
 
     @Override
     public List<Order> getAllAssigned() {
-        return jpaRepository.findAssignedOrders()
-                .stream()
-                .map(OrderJpaEntity::toDomain)
-                .toList();
+        return jpaRepository.findAssignedOrders().stream().map(OrderJpaEntity::toDomain).toList();
     }
 
     @Override

@@ -55,11 +55,7 @@ public class AssignmentJpaEntity {
     public static AssignmentJpaEntity fromDomain(Assignment assignment) {
         var location = assignment.getLocation();
         var volume = assignment.getVolume();
-        return new AssignmentJpaEntity(
-                assignment.getOrderId(),
-                volume.getValue(),
-                location.getX(),
-                location.getY(),
+        return new AssignmentJpaEntity(assignment.getOrderId(), volume.getValue(), location.getX(), location.getY(),
                 assignment.getStatus());
     }
 

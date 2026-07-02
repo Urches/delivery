@@ -13,7 +13,9 @@ public record CourierDto(UUID id, String name, Location location) {
     /**
      * Создаёт DTO из доменной модели Courier.
      *
-     * @param courier доменный объект курьера
+     * @param courier
+     *            доменный объект курьера
+     *
      * @return CourierDto
      */
     public static CourierDto from(Courier courier) {

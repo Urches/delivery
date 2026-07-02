@@ -13,7 +13,9 @@ public record OrderDto(UUID id, Location location) {
     /**
      * Создаёт DTO из доменной модели Order.
      *
-     * @param order доменный объект заказа
+     * @param order
+     *            доменный объект заказа
+     *
      * @return OrderDto
      */
     public static OrderDto from(Order order) {

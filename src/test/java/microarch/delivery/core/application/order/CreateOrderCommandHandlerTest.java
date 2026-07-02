@@ -39,7 +39,8 @@ class CreateOrderCommandHandlerTest {
     void shouldCreateOrderSuccessfully() {
         // Arrange
         UUID orderId = UUID.randomUUID();
-        CreateOrderCommand command = new CreateOrderCommand(orderId, "Russia", "Moscow", "Tverskaya", "10", "5", 5);
+        CreateOrderCommand command = CreateOrderCommand.create(orderId, "Russia", "Moscow", "Tverskaya", "10", "5", 5)
+                .getValueOrThrow();
 
         // Act
         Result<Void, ?> result = handler.handle(command);
@@ -56,17 +57,15 @@ class CreateOrderCommandHandlerTest {
         assertThat(savedOrder.getVolume().getValue()).isEqualTo(5);
         assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.CREATED);
         assertThat(savedOrder.getLocation()).isNotNull();
-        assertThat(savedOrder.getLocation().getX()).isBetween(1, 10);
-        assertThat(savedOrder.getLocation().getY()).isBetween(1, 10);
     }
 
     @Test
     void shouldCreateOrderWithDifferentVolumes() {
         // Arrange
-        CreateOrderCommand command1 = new CreateOrderCommand(UUID.randomUUID(), "Russia", "Moscow", "Street1", "1", "1",
-                1);
-        CreateOrderCommand command2 = new CreateOrderCommand(UUID.randomUUID(), "Russia", "Moscow", "Street2", "2", "2",
-                15);
+        CreateOrderCommand command1 = CreateOrderCommand
+                .create(UUID.randomUUID(), "Russia", "Moscow", "Street1", "1", "1", 1).getValueOrThrow();
+        CreateOrderCommand command2 = CreateOrderCommand
+                .create(UUID.randomUUID(), "Russia", "Moscow", "Street2", "2", "2", 15).getValueOrThrow();
 
         // Act
         Result<Void, ?> result1 = handler.handle(command1);

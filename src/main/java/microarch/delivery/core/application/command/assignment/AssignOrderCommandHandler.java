@@ -1,8 +1,9 @@
 package microarch.delivery.core.application.command.assignment;
 
 import libs.errs.Error;
+import libs.errs.GeneralErrors;
 import libs.errs.Result;
-import microarch.delivery.core.application.CommandHandler;
+import lombok.RequiredArgsConstructor;
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.service.OrderDispatchService;
@@ -12,31 +13,26 @@ import microarch.delivery.core.ports.OrderRepository;
 /**
  * Обработчик команды на назначение заказа курьеру.
  */
-public class AssignOrderCommandHandler implements CommandHandler<AssignOrderCommand, Void> {
+@RequiredArgsConstructor
+public class AssignOrderCommandHandler {
 
     private final OrderRepository orderRepository;
     private final CourierRepository courierRepository;
     private final OrderDispatchService dispatchService;
 
-    public AssignOrderCommandHandler(OrderRepository orderRepository, CourierRepository courierRepository,
-            OrderDispatchService dispatchService) {
-        this.orderRepository = orderRepository;
-        this.courierRepository = courierRepository;
-        this.dispatchService = dispatchService;
-    }
-
-    @Override
     public Result<Void, Error> handle(AssignOrderCommand command) {
         // Получаем 1 любой не назначенный заказ из БД (со статусом CREATED)
-        var order = orderRepository.getOneNew()
-                .orElseThrow(() -> new IllegalArgumentException("No new orders available for assignment"));
+        var orderOpt = orderRepository.getOneNew();
+        if (orderOpt.isEmpty()) {
+            return Result.failure(GeneralErrors.invalidOperation("No new orders available for assignment"));
+        }
+        var order = orderOpt.get();
 
         // Получаем всех курьеров
         var couriers = courierRepository.getAll();
 
         // Производим диспетчеризацию заказа на курьеров
         var dispatchResult = dispatchService.dispatch(order, couriers);
-
         if (dispatchResult.isFailure()) {
             return Result.failure(dispatchResult.getError());
         }

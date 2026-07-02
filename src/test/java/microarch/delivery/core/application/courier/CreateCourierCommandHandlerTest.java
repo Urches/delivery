@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import libs.errs.Result;
 import microarch.delivery.core.application.command.courier.CreateCourierCommand;
@@ -16,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -27,11 +29,15 @@ class CreateCourierCommandHandlerTest {
     @Mock
     private CourierRepository courierRepository;
 
+    @Mock
+    private Random random;
+
     private CreateCourierCommandHandler handler;
 
     @BeforeEach
     void setUp() {
-        handler = new CreateCourierCommandHandler(courierRepository);
+        when(random.nextInt(10)).thenReturn(5);
+        handler = new CreateCourierCommandHandler(courierRepository, random);
     }
 
     @Test
@@ -39,7 +45,7 @@ class CreateCourierCommandHandlerTest {
         // Arrange
         UUID courierId = UUID.randomUUID();
         String courierName = "Ivan";
-        CreateCourierCommand command = new CreateCourierCommand(courierId, courierName);
+        CreateCourierCommand command = CreateCourierCommand.create(courierId, courierName).getValueOrThrow();
 
         // Act
         Result<Void, ?> result = handler.handle(command);
@@ -55,17 +61,17 @@ class CreateCourierCommandHandlerTest {
         assertThat(savedCourier.getId()).isEqualTo(courierId);
         assertThat(savedCourier.getName()).isEqualTo(courierName);
         assertThat(savedCourier.getLocation()).isNotNull();
-        assertThat(savedCourier.getLocation().getX()).isBetween(1, 10);
-        assertThat(savedCourier.getLocation().getY()).isBetween(1, 10);
+        assertThat(savedCourier.getLocation().getX()).isEqualTo(6);
+        assertThat(savedCourier.getLocation().getY()).isEqualTo(6);
         assertThat(savedCourier.getMaxVolume().getValue()).isEqualTo(20);
     }
 
     @Test
     void shouldCreateMultipleCouriers() {
         // Arrange
-        CreateCourierCommand command1 = new CreateCourierCommand(UUID.randomUUID(), "Courier1");
-        CreateCourierCommand command2 = new CreateCourierCommand(UUID.randomUUID(), "Courier2");
-        CreateCourierCommand command3 = new CreateCourierCommand(UUID.randomUUID(), "Courier3");
+        CreateCourierCommand command1 = CreateCourierCommand.create(UUID.randomUUID(), "Courier1").getValueOrThrow();
+        CreateCourierCommand command2 = CreateCourierCommand.create(UUID.randomUUID(), "Courier2").getValueOrThrow();
+        CreateCourierCommand command3 = CreateCourierCommand.create(UUID.randomUUID(), "Courier3").getValueOrThrow();
 
         // Act
         Result<Void, ?> result1 = handler.handle(command1);

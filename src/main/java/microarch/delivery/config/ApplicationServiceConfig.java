@@ -29,8 +29,8 @@ public class ApplicationServiceConfig {
     }
 
     @Bean
-    public CreateOrderCommandHandler createOrderCommandHandler(OrderRepository orderRepository, Random random) {
-        return new CreateOrderCommandHandler(orderRepository, random);
+    public CreateOrderCommandHandler createOrderCommandHandler(OrderRepository orderRepository) {
+        return new CreateOrderCommandHandler(orderRepository);
     }
 
     @Bean

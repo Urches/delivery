@@ -3,7 +3,6 @@ package microarch.delivery.core.application.command.courier;
 import libs.errs.Error;
 import libs.errs.Result;
 import lombok.RequiredArgsConstructor;
-import microarch.delivery.core.application.CommandHandler;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.ports.CourierRepository;
@@ -14,12 +13,11 @@ import java.util.Random;
  * Обработчик команды на создание курьера.
  */
 @RequiredArgsConstructor
-public class CreateCourierCommandHandler implements CommandHandler<CreateCourierCommand, Void> {
+public class CreateCourierCommandHandler {
 
     private final CourierRepository courierRepository;
     private final Random random;
 
-    @Override
     public Result<Void, Error> handle(CreateCourierCommand command) {
         // Создаем рандомную Location для курьера
         var randomX = random.nextInt(10) + 1; // от 1 до 10
@@ -30,7 +28,7 @@ public class CreateCourierCommandHandler implements CommandHandler<CreateCourier
         }
 
         // Создаем курьера
-        var courier = Courier.create(command.courierId(), command.name(), location.getValue());
+        var courier = Courier.create(command.getCourierId(), command.getName(), location.getValue());
         if (courier.isFailure()) {
             return Result.failure(courier.getError());
         }
