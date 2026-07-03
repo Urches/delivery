@@ -1,11 +1,11 @@
 package microarch.delivery.core.domain.model.courier;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.order.Volume;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
@@ -263,38 +263,30 @@ class CourierTest {
     private Courier createValidCourier() {
         var id = UUID.randomUUID();
         var name = "John Doe";
-        var locationResult = Location.create(5, 5);
-        var courierResult = Courier.create(id, name, locationResult.getValue());
-        return courierResult.getValue();
+        var location = Location.mustCreate(5, 5);
+        return Courier.mustCreate(id, name, location);
     }
 
     private Courier createValidCourierWithLocation(Location location) {
         var id = UUID.randomUUID();
         var name = "John Doe";
-        var courierResult = Courier.create(id, name, location);
-        return courierResult.getValue();
+        return Courier.mustCreate(id, name, location);
     }
 
     private Order createValidOrder() {
         var id = UUID.randomUUID();
-        var volumeResult = Volume.create(5);
-        var locationResult = Location.create(5, 5);
-        var orderResult = Order.create(id, locationResult.getValue(), volumeResult.getValue());
-        return orderResult.getValue();
+        var volume = Volume.mustCreate(5);
+        var location = Location.mustCreate(5, 5);
+        return Order.mustCreate(id, location, volume);
     }
 
     private Order createOrderWithVolume(int volume) {
         var id = UUID.randomUUID();
-        var volumeResult = Volume.create(volume);
-        var locationResult = Location.create(5, 5);
-        var orderResult = Order.create(id, locationResult.getValue(), volumeResult.getValue());
-        return orderResult.getValue();
+        return Order.mustCreate(id, Location.mustCreate(5, 5), Volume.mustCreate(volume));
     }
 
     private Order createOrderWithLocation(Location location) {
         var id = UUID.randomUUID();
-        var volumeResult = Volume.create(5);
-        var orderResult = Order.create(id, location, volumeResult.getValue());
-        return orderResult.getValue();
+        return Order.mustCreate(id, location, Volume.mustCreate(5));
     }
 }

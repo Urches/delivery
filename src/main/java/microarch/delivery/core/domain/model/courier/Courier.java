@@ -33,14 +33,22 @@ public class Courier extends Aggregate<UUID> {
     private final List<Assignment> assignments = new ArrayList<>();
 
     /**
-     * Конструктор для использования в фабричном методе create и в инфраструктуре (маппинг). Имеет видимость
-     * package-private для доступа из слоя persistence.
+     * Конструктор для использования в фабричном методе create.
      */
     private Courier(UUID id, String name, Location location, Volume maxVolume) {
         super(id);
         this.name = name;
         this.location = location;
         this.maxVolume = maxVolume;
+    }
+
+    /**
+     * Создаёт Courier с указанными параметрами. Используется инфраструктурой для восстановления из БД.
+     */
+    public static Courier of(UUID id, String name, Location location, Volume maxVolume, List<Assignment> assignments) {
+        var courier = new Courier(id, name, location, maxVolume);
+        courier.assignments.addAll(assignments);
+        return courier;
     }
 
     /**
@@ -65,6 +73,10 @@ public class Courier extends Aggregate<UUID> {
 
         var maxVolume = Volume.create(MAX_VOLUME_LIMIT).getValueOrThrow();
         return Result.success(new Courier(id, name, location, maxVolume));
+    }
+
+    public static Courier mustCreate(UUID id, String name, Location location) {
+        return create(id, name, location).getValueOrThrow();
     }
 
     /**

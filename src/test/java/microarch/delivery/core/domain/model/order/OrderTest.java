@@ -200,9 +200,8 @@ class OrderTest {
 
     private Order createValidOrder() {
         var id = UUID.randomUUID();
-        var locationResult = Location.create(5, 5);
-        var volumeResult = Volume.create(10);
-        var orderResult = Order.create(id, locationResult.getValue(), volumeResult.getValue());
-        return orderResult.getValue();
+        var location = Location.mustCreate(5, 5);
+        var volume = Volume.mustCreate(10);
+        return Order.mustCreate(id, location, volume);
     }
 }
