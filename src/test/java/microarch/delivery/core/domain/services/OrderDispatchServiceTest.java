@@ -1,4 +1,4 @@
-package microarch.delivery.core.domain.service;
+package microarch.delivery.core.domain.services;
 
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.courier.Courier;

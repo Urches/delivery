@@ -1,4 +1,4 @@
-package microarch.delivery.core.domain.service;
+package microarch.delivery.core.domain.services;
 
 import libs.errs.Error;
 import libs.errs.Result;

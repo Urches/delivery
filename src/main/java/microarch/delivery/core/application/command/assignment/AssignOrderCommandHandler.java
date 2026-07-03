@@ -4,9 +4,7 @@ import libs.errs.Error;
 import libs.errs.GeneralErrors;
 import libs.errs.Result;
 import lombok.RequiredArgsConstructor;
-import microarch.delivery.core.domain.model.courier.Courier;
-import microarch.delivery.core.domain.model.order.Order;
-import microarch.delivery.core.domain.service.OrderDispatchService;
+import microarch.delivery.core.domain.services.OrderDispatchService;
 import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.OrderRepository;
 

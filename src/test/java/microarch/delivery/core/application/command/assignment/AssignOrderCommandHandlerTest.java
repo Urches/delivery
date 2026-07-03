@@ -5,7 +5,7 @@ import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.order.Volume;
-import microarch.delivery.core.domain.service.OrderDispatchService;
+import microarch.delivery.core.domain.services.OrderDispatchService;
 import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;

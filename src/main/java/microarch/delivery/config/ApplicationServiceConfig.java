@@ -7,7 +7,7 @@ import microarch.delivery.core.application.command.courier.MoveCourierCommandHan
 import microarch.delivery.core.application.command.order.CreateOrderCommandHandler;
 import microarch.delivery.core.application.query.courier.GetAllCouriersQueryHandler;
 import microarch.delivery.core.application.query.order.GetNotCompletedOrdersQueryHandler;
-import microarch.delivery.core.domain.service.OrderDispatchService;
+import microarch.delivery.core.domain.services.OrderDispatchService;
 import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.OrderRepository;
 import org.springframework.context.annotation.Bean;
