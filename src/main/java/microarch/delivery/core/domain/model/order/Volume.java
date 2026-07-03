@@ -26,9 +26,7 @@ public class Volume extends ValueObject<Volume> {
     /**
      * Фабричный метод для создания Volume.
      *
-     * @param value
-     *            значение объема (от 1 до 100)
-     *
+     * @param value значение объема (от 1 до 100)
      * @return Result с Volume при успехе или Error при неудаче
      */
     public static Result<Volume, Error> create(int value) {
@@ -42,9 +40,7 @@ public class Volume extends ValueObject<Volume> {
     /**
      * Фабричный метод для создания Volume.
      *
-     * @param value
-     *            значение объема (от 1 до 100)
-     *
+     * @param value значение объема (от 1 до 100)
      * @return Volume при успехе или Exception при неудаче
      */
     public static Volume mustCreate(int value) {
@@ -54,9 +50,7 @@ public class Volume extends ValueObject<Volume> {
     /**
      * Метод для создания нового Volume, содержащего value текущего Volume + value входного Volume.
      *
-     * @param volume
-     *            добавочное значение Volume
-     *
+     * @param volume добавочное значение Volume
      * @return Result с Volume при успехе или Error при неудаче. Если volume == null - ошибка
      */
     public Result<Volume, Error> plus(Volume volume) {
@@ -66,9 +60,7 @@ public class Volume extends ValueObject<Volume> {
     }
 
     /**
-     * @param volume
-     *            Volume для сравнения
-     *
+     * @param volume Volume для сравнения
      * @return true если текущий Volume меньше или равен volume
      */
     public boolean lessOrEqual(Volume volume) {
