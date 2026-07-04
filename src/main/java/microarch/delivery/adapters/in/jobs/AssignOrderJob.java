@@ -1,9 +1,9 @@
-package microarch.delivery.adapters.in.http.jobs;
+package microarch.delivery.adapters.in.jobs;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import microarch.delivery.core.application.command.assignment.AssignOrderCommand;
-import microarch.delivery.core.application.command.assignment.AssignOrderCommandHandler;
+import microarch.delivery.core.application.command.AssignOrderCommand;
+import microarch.delivery.core.application.command.AssignOrderCommandHandler;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.springframework.stereotype.Component;
