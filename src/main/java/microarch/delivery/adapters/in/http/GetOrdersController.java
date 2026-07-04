@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import microarch.delivery.adapters.in.http.api.GetOrdersApi;
 import microarch.delivery.adapters.in.http.mappers.HttpMapper;
 import microarch.delivery.adapters.in.http.model.Order;
+import microarch.delivery.core.application.query.GetNotCompletedOrdersQuery;
+import microarch.delivery.core.application.query.GetNotCompletedOrdersQueryHandler;
 import microarch.delivery.core.application.query.order.GetNotCompletedOrdersQuery;
 import microarch.delivery.core.application.query.dto.OrderDto;
 import microarch.delivery.core.application.query.order.GetNotCompletedOrdersQueryHandler;

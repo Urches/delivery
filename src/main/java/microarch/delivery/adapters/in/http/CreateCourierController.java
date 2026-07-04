@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import microarch.delivery.adapters.in.http.api.CreateCourierApi;
 import microarch.delivery.adapters.in.http.model.CreateCourierResponse;
 import microarch.delivery.adapters.in.http.model.NewCourier;
+import microarch.delivery.core.application.command.CreateCourierCommand;
+import microarch.delivery.core.application.command.CreateCourierCommandHandler;
 import microarch.delivery.core.application.command.courier.CreateCourierCommand;
 import microarch.delivery.core.application.command.courier.CreateCourierCommandHandler;
 import org.springframework.http.HttpStatus;
