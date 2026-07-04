@@ -1,10 +1,11 @@
 package microarch.delivery.adapters.out.kafka;
 
+import libs.ddd.DomainEvent;
 import lombok.RequiredArgsConstructor;
 import microarch.delivery.ApplicationProperties;
 import microarch.delivery.core.domain.model.order.events.OrderAssignedEvent;
 import microarch.delivery.core.domain.model.order.events.OrderCompletedEvent;
-import org.springframework.context.ApplicationEventPublisher;
+import microarch.delivery.core.ports.DomainEventProducer;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Repository;
 import queues.order.events.OrderEventsProto;
@@ -13,14 +14,14 @@ import java.util.concurrent.ExecutionException;
 
 @Repository
 @RequiredArgsConstructor
-public class KafkaDomainEventPublisher implements ApplicationEventPublisher {
+public class KafkaDomainEventProducer implements DomainEventProducer {
 
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
 
     private final ApplicationProperties properties;
 
     @Override
-    public void publishEvent(Object event) {
+    public void produce(DomainEvent event) {
         try {
             var topic = properties.getKafka().getOrderEventsTopic();
             switch (event) {
