@@ -1,7 +1,6 @@
 package microarch.delivery.config;
 
-import libs.ddd.DomainEventPublisher;
-import microarch.delivery.DefaultDomainEventPublisher;
+import microarch.delivery.adapters.out.postgres.outbox.OutboxDomainEventPublisher;
 import microarch.delivery.core.application.command.assignment.AssignOrderCommandHandler;
 import microarch.delivery.core.application.command.assignment.CompleteOrderCommandHandler;
 import microarch.delivery.core.application.command.courier.CreateCourierCommandHandler;
@@ -56,13 +55,13 @@ public class ApplicationServiceConfig {
 
     @Bean
     public AssignOrderCommandHandler assignOrderCommandHandler(OrderRepository orderRepository,
-            CourierRepository courierRepository, OrderDispatchService dispatchService, DefaultDomainEventPublisher domainEventPublisher) {
+            CourierRepository courierRepository, OrderDispatchService dispatchService, OutboxDomainEventPublisher domainEventPublisher) {
         return new AssignOrderCommandHandler(orderRepository, courierRepository, dispatchService, domainEventPublisher);
     }
 
     @Bean
     public CompleteOrderCommandHandler completeOrderCommandHandler(CourierRepository courierRepository,
-            OrderRepository orderRepository, DefaultDomainEventPublisher domainEventPublisher) {
+            OrderRepository orderRepository, OutboxDomainEventPublisher domainEventPublisher) {
         return new CompleteOrderCommandHandler(courierRepository, orderRepository, domainEventPublisher);
     }
 
