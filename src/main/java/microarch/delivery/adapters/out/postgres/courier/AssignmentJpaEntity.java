@@ -36,7 +36,8 @@ public class AssignmentJpaEntity {
     @Enumerated(EnumType.STRING)
     private AssignmentStatus status;
 
-    public AssignmentJpaEntity(UUID id, UUID orderId, int volume, int locationX, int locationY, AssignmentStatus status) {
+    public AssignmentJpaEntity(UUID id, UUID orderId, int volume, int locationX, int locationY,
+            AssignmentStatus status) {
         this.id = id;
         this.orderId = orderId;
         this.volume = volume;
@@ -48,13 +49,8 @@ public class AssignmentJpaEntity {
     public static AssignmentJpaEntity fromDomain(Assignment assignment) {
         var location = assignment.getLocation();
         var volume = assignment.getVolume();
-        return new AssignmentJpaEntity(
-                assignment.getId(),
-                assignment.getOrderId(),
-                volume.getValue(),
-                location.getX(),
-                location.getY(),
-                assignment.getStatus());
+        return new AssignmentJpaEntity(assignment.getId(), assignment.getOrderId(), volume.getValue(), location.getX(),
+                location.getY(), assignment.getStatus());
     }
 
     public Assignment toDomain() {
