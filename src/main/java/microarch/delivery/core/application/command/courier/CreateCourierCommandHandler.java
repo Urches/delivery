@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.ports.CourierRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
 
@@ -18,6 +19,7 @@ public class CreateCourierCommandHandler {
     private final CourierRepository courierRepository;
     private final Random random;
 
+    @Transactional
     public Result<Void, Error> handle(CreateCourierCommand command) {
         // Создаем рандомную Location для курьера
         var randomX = random.nextInt(10) + 1; // от 1 до 10

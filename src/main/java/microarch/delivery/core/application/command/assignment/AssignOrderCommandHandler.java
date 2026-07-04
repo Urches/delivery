@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import microarch.delivery.core.domain.services.OrderDispatchService;
 import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.OrderRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Обработчик команды на назначение заказа курьеру.
@@ -18,6 +19,7 @@ public class AssignOrderCommandHandler {
     private final CourierRepository courierRepository;
     private final OrderDispatchService dispatchService;
 
+    @Transactional
     public Result<Void, Error> handle(AssignOrderCommand command) {
         // Получаем 1 любой не назначенный заказ из БД (со статусом CREATED)
         var orderOpt = orderRepository.getOneNew();

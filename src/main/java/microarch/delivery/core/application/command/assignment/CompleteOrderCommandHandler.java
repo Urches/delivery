@@ -4,10 +4,9 @@ import libs.errs.Error;
 import libs.errs.GeneralErrors;
 import libs.errs.Result;
 import lombok.RequiredArgsConstructor;
-import microarch.delivery.core.domain.model.courier.Courier;
-import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.OrderRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Обработчик команды на завершение заказа курьером.
@@ -18,6 +17,7 @@ public class CompleteOrderCommandHandler {
     private final CourierRepository courierRepository;
     private final OrderRepository orderRepository;
 
+    @Transactional
     public Result<Void, Error> handle(CompleteOrderCommand command) {
         // Получаем курьера из БД
         var courier = courierRepository.getById(command.getCourierId())
