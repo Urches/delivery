@@ -97,8 +97,7 @@ class GrpcGeoClientAdapterTest {
             // Возвращаем фиксированные координаты для любого запроса
             var location = GeoProto.Location.newBuilder().setX(1).setY(2).build();
 
-            var reply = GeoProto.GetGeolocationReply.newBuilder().setLocation(location)
-                    .build();
+            var reply = GeoProto.GetGeolocationReply.newBuilder().setLocation(location).build();
 
             responseObserver.onNext(reply);
             responseObserver.onCompleted();

@@ -4,6 +4,7 @@ import microarch.delivery.core.application.command.assignment.AssignOrderCommand
 import microarch.delivery.core.application.command.assignment.CompleteOrderCommandHandler;
 import microarch.delivery.core.application.command.courier.CreateCourierCommandHandler;
 import microarch.delivery.core.application.command.courier.MoveCourierCommandHandler;
+import microarch.delivery.core.application.command.order.CreateBasketOrderCommandHandler;
 import microarch.delivery.core.application.command.order.CreateOrderCommandHandler;
 import microarch.delivery.core.application.query.courier.GetAllCouriersQueryHandler;
 import microarch.delivery.core.application.query.order.GetNotCompletedOrdersQueryHandler;
@@ -33,6 +34,12 @@ public class ApplicationServiceConfig {
     public CreateOrderCommandHandler createOrderCommandHandler(OrderRepository orderRepository,
             GeoClientPort geoClientPort) {
         return new CreateOrderCommandHandler(orderRepository, geoClientPort);
+    }
+
+    @Bean
+    public CreateBasketOrderCommandHandler createBasketOrderCommandHandler(OrderRepository orderRepository,
+            GeoClientPort geoClientPort) {
+        return new CreateBasketOrderCommandHandler(orderRepository, geoClientPort);
     }
 
     @Bean
