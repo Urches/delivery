@@ -1,6 +1,5 @@
 package microarch.delivery.config;
 
-import microarch.delivery.adapters.in.http.jobs.AssignOrderJob;
 import microarch.delivery.adapters.in.jobs.AssignOrderJob;
 import org.quartz.*;
 import org.springframework.context.annotation.Bean;

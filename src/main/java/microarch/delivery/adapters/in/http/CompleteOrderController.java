@@ -2,8 +2,6 @@ package microarch.delivery.adapters.in.http;
 
 import lombok.RequiredArgsConstructor;
 import microarch.delivery.adapters.in.http.api.CompleteOrderApi;
-import microarch.delivery.core.application.command.assignment.CompleteOrderCommand;
-import microarch.delivery.core.application.command.assignment.CompleteOrderCommandHandler;
 import microarch.delivery.core.application.command.CompleteOrderCommand;
 import microarch.delivery.core.application.command.CompleteOrderCommandHandler;
 import org.springframework.http.HttpStatus;

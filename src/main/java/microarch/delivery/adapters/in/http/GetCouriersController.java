@@ -6,8 +6,6 @@ import microarch.delivery.adapters.in.http.mappers.HttpMapper;
 import microarch.delivery.adapters.in.http.model.Courier;
 import microarch.delivery.core.application.query.GetAllCouriersQuery;
 import microarch.delivery.core.application.query.GetAllCouriersQueryHandler;
-import microarch.delivery.core.application.query.courier.GetAllCouriersQuery;
-import microarch.delivery.core.application.query.courier.GetAllCouriersQueryHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
