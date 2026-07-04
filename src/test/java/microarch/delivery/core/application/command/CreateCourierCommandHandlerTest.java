@@ -1,4 +1,4 @@
-package microarch.delivery.core.application.courier;
+package microarch.delivery.core.application.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,8 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import libs.errs.Result;
-import microarch.delivery.core.application.command.CreateCourierCommand;
-import microarch.delivery.core.application.command.CreateCourierCommandHandler;
 import microarch.delivery.core.ports.CourierRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
