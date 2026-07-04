@@ -55,10 +55,16 @@ public class CourierJpaEntity {
     public static CourierJpaEntity fromDomain(Courier courier) {
         var location = courier.getLocation();
         var volume = courier.getMaxVolume();
-        var entity = new CourierJpaEntity(courier.getId(), courier.getName(), location.getX(), location.getY(),
+        var entity = new CourierJpaEntity(courier.getId(),
+                courier.getName(),
+                location.getX(),
+                location.getY(),
                 volume.getValue());
 
-        var assignmentEntities = courier.getAssignments().stream().map(AssignmentJpaEntity::fromDomain).toList();
+        var assignmentEntities = courier.getAssignments()
+                .stream()
+                .map(AssignmentJpaEntity::fromDomain)
+                .toList();
 
         entity.assignments.clear();
         entity.assignments.addAll(assignmentEntities);
@@ -68,7 +74,10 @@ public class CourierJpaEntity {
     public Courier toDomain() {
         var location = Location.mustCreate(locationX, locationY);
         var domainVolume = Volume.mustCreate(maxVolume);
-        var domainAssignments = assignments.stream().map(AssignmentJpaEntity::toDomain).toList();
+        var domainAssignments = assignments
+                .stream()
+                .map(AssignmentJpaEntity::toDomain)
+                .toList();
         return Courier.of(id, name, location, domainVolume, domainAssignments);
     }
 }

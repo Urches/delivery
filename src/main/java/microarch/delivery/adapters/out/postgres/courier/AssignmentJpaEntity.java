@@ -1,13 +1,6 @@
 package microarch.delivery.adapters.out.postgres.courier;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import microarch.delivery.core.domain.model.Location;
@@ -24,7 +17,6 @@ import java.util.UUID;
 public class AssignmentJpaEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private UUID id;
 
@@ -44,7 +36,8 @@ public class AssignmentJpaEntity {
     @Enumerated(EnumType.STRING)
     private AssignmentStatus status;
 
-    public AssignmentJpaEntity(UUID orderId, int volume, int locationX, int locationY, AssignmentStatus status) {
+    public AssignmentJpaEntity(UUID id, UUID orderId, int volume, int locationX, int locationY, AssignmentStatus status) {
+        this.id = id;
         this.orderId = orderId;
         this.volume = volume;
         this.locationX = locationX;
@@ -55,13 +48,18 @@ public class AssignmentJpaEntity {
     public static AssignmentJpaEntity fromDomain(Assignment assignment) {
         var location = assignment.getLocation();
         var volume = assignment.getVolume();
-        return new AssignmentJpaEntity(assignment.getOrderId(), volume.getValue(), location.getX(), location.getY(),
+        return new AssignmentJpaEntity(
+                assignment.getId(),
+                assignment.getOrderId(),
+                volume.getValue(),
+                location.getX(),
+                location.getY(),
                 assignment.getStatus());
     }
 
     public Assignment toDomain() {
         var location = Location.mustCreate(locationX, locationY);
         var domainVolume = Volume.mustCreate(volume);
-        return Assignment.mustCreate(id, orderId, domainVolume, location);
+        return Assignment.of(id, orderId, domainVolume, location, status);
     }
 }

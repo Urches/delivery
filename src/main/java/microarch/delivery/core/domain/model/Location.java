@@ -28,15 +28,13 @@ public class Location extends ValueObject<Location> {
     /**
      * Фабричный метод для создания Location.
      *
-     * @param x
-     *            координата по горизонтали (от 1 до 10)
-     * @param y
-     *            координата по вертикали (от 1 до 10)
-     *
+     * @param x координата по горизонтали (от 1 до 10)
+     * @param y координата по вертикали (от 1 до 10)
      * @return Result с Location при успехе или Error при неудаче
      */
     public static Result<Location, Error> create(int x, int y) {
-        var error = Guard.combine(Guard.againstOutOfRange(x, MIN_COORDINATE, MAX_COORDINATE, "x"),
+        var error = Guard.combine(
+                Guard.againstOutOfRange(x, MIN_COORDINATE, MAX_COORDINATE, "x"),
                 Guard.againstOutOfRange(y, MIN_COORDINATE, MAX_COORDINATE, "y"));
 
         if (error != null) {
@@ -48,11 +46,8 @@ public class Location extends ValueObject<Location> {
     /**
      * Фабричный метод для создания Location.
      *
-     * @param x
-     *            координата по горизонтали (от 1 до 10)
-     * @param y
-     *            координата по вертикали (от 1 до 10)
-     *
+     * @param x координата по горизонтали (от 1 до 10)
+     * @param y координата по вертикали (от 1 до 10)
      * @return Location при успехе или Exception при неудаче
      */
     public static Location mustCreate(int x, int y) {
@@ -63,9 +58,7 @@ public class Location extends ValueObject<Location> {
      * Рассчитывает расстояние до другой точки Location. Расстояние - это совокупное количество шагов по X и Y
      * (манхэттенское расстояние).
      *
-     * @param other
-     *            другая точка Location
-     *
+     * @param other другая точка Location
      * @return количество шагов, необходимых для достижения точки other
      */
     public int distanceTo(Location other) {

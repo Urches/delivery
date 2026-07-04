@@ -56,7 +56,8 @@ public class Order extends Aggregate<UUID> {
      * @return Result с Order при успехе или Error при неудаче
      */
     public static Result<Order, Error> create(UUID id, Location location, Volume volume) {
-        var error = Guard.combine(Guard.againstNullOrEmpty(id, "id"),
+        var error = Guard.combine(
+                Guard.againstNullOrEmpty(id, "id"),
                 location == null ? GeneralErrors.valueIsRequired("location") : null,
                 volume == null ? GeneralErrors.valueIsRequired("volume") : null);
         if (error != null) {
