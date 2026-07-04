@@ -1,4 +1,4 @@
-package microarch.delivery.core.application.command.courier;
+package microarch.delivery.core.application.command;
 
 import libs.errs.Error;
 import libs.errs.Result;

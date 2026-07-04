@@ -7,8 +7,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import libs.errs.Result;
-import microarch.delivery.core.application.command.courier.CreateCourierCommand;
-import microarch.delivery.core.application.command.courier.CreateCourierCommandHandler;
+import microarch.delivery.core.application.command.CreateCourierCommand;
+import microarch.delivery.core.application.command.CreateCourierCommandHandler;
 import microarch.delivery.core.ports.CourierRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

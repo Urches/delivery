@@ -1,6 +1,8 @@
 package microarch.delivery.core.application.command.courier;
 
 import libs.errs.Result;
+import microarch.delivery.core.application.command.MoveCourierCommand;
+import microarch.delivery.core.application.command.MoveCourierCommandHandler;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.ports.CourierRepository;

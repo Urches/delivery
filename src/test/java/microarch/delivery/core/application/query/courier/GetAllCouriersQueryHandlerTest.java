@@ -1,5 +1,7 @@
 package microarch.delivery.core.application.query.courier;
 
+import microarch.delivery.core.application.query.GetAllCouriersQuery;
+import microarch.delivery.core.application.query.GetAllCouriersQueryHandler;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.ports.CourierRepository;

@@ -1,5 +1,7 @@
 package microarch.delivery.core.application.query.order;
 
+import microarch.delivery.core.application.query.GetNotCompletedOrdersQuery;
+import microarch.delivery.core.application.query.GetNotCompletedOrdersQueryHandler;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.order.Volume;

@@ -1,4 +1,4 @@
-package microarch.delivery.core.application.query.order;
+package microarch.delivery.core.application.query;
 
 import libs.errs.Error;
 import libs.errs.Result;

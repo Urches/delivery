@@ -6,8 +6,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import libs.errs.Result;
-import microarch.delivery.core.application.command.order.CreateOrderCommand;
-import microarch.delivery.core.application.command.order.CreateOrderCommandHandler;
+import microarch.delivery.core.application.command.CreateOrderCommand;
+import microarch.delivery.core.application.command.CreateOrderCommandHandler;
 import microarch.delivery.core.domain.model.order.OrderStatus;
 import microarch.delivery.core.ports.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,7 +1,6 @@
-package microarch.delivery.core.application.command.courier;
+package microarch.delivery.core.application.command;
 
 import libs.errs.Error;
-import libs.errs.GeneralErrors;
 import libs.errs.Guard;
 import libs.errs.Result;
 import lombok.Getter;

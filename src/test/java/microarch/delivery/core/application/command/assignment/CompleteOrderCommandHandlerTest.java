@@ -1,5 +1,7 @@
 package microarch.delivery.core.application.command.assignment;
 
+import microarch.delivery.core.application.command.CompleteOrderCommand;
+import microarch.delivery.core.application.command.CompleteOrderCommandHandler;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.domain.model.order.Order;
