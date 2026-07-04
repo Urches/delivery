@@ -1,5 +1,7 @@
 package microarch.delivery.config;
 
+import libs.ddd.DomainEventPublisher;
+import microarch.delivery.DefaultDomainEventPublisher;
 import microarch.delivery.core.application.command.assignment.AssignOrderCommandHandler;
 import microarch.delivery.core.application.command.assignment.CompleteOrderCommandHandler;
 import microarch.delivery.core.application.command.courier.CreateCourierCommandHandler;
@@ -54,14 +56,14 @@ public class ApplicationServiceConfig {
 
     @Bean
     public AssignOrderCommandHandler assignOrderCommandHandler(OrderRepository orderRepository,
-            CourierRepository courierRepository, OrderDispatchService dispatchService) {
-        return new AssignOrderCommandHandler(orderRepository, courierRepository, dispatchService);
+            CourierRepository courierRepository, OrderDispatchService dispatchService, DefaultDomainEventPublisher domainEventPublisher) {
+        return new AssignOrderCommandHandler(orderRepository, courierRepository, dispatchService, domainEventPublisher);
     }
 
     @Bean
     public CompleteOrderCommandHandler completeOrderCommandHandler(CourierRepository courierRepository,
-            OrderRepository orderRepository) {
-        return new CompleteOrderCommandHandler(courierRepository, orderRepository);
+            OrderRepository orderRepository, DefaultDomainEventPublisher domainEventPublisher) {
+        return new CompleteOrderCommandHandler(courierRepository, orderRepository, domainEventPublisher);
     }
 
     // Query Handlers

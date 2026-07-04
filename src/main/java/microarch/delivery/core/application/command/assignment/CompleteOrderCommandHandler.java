@@ -1,13 +1,14 @@
 package microarch.delivery.core.application.command.assignment;
 
+import libs.ddd.DomainEventPublisher;
 import libs.errs.Error;
 import libs.errs.GeneralErrors;
 import libs.errs.Result;
 import lombok.RequiredArgsConstructor;
-import microarch.delivery.core.domain.model.courier.Courier;
-import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.OrderRepository;
+
+import java.util.List;
 
 /**
  * Обработчик команды на завершение заказа курьером.
@@ -17,6 +18,7 @@ public class CompleteOrderCommandHandler {
 
     private final CourierRepository courierRepository;
     private final OrderRepository orderRepository;
+    private final DomainEventPublisher domainEventPublisher;
 
     public Result<Void, Error> handle(CompleteOrderCommand command) {
         // Получаем курьера из БД
@@ -45,6 +47,7 @@ public class CompleteOrderCommandHandler {
         courierRepository.update(courier);
         orderRepository.update(order);
 
+        domainEventPublisher.publish(List.of(order));
         return Result.success();
     }
 }

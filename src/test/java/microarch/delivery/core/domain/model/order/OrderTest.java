@@ -1,6 +1,8 @@
 package microarch.delivery.core.domain.model.order;
 
 import microarch.delivery.core.domain.model.Location;
+import microarch.delivery.core.domain.model.order.events.OrderAssignedEvent;
+import microarch.delivery.core.domain.model.order.events.OrderCompletedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -93,6 +95,7 @@ class OrderTest {
 
             assertTrue(result.isSuccess());
             assertEquals(OrderStatus.ASSIGNED, order.getStatus());
+            assertDomainEventForStatues(order, OrderStatus.ASSIGNED);
         }
 
         @Test
@@ -106,6 +109,7 @@ class OrderTest {
             assertTrue(result.isFailure());
             assertNotNull(result.getError());
             assertEquals(OrderStatus.ASSIGNED, order.getStatus());
+            assertDomainEventForStatues(order, OrderStatus.ASSIGNED);
         }
 
         @Test
@@ -120,6 +124,7 @@ class OrderTest {
             assertTrue(result.isFailure());
             assertNotNull(result.getError());
             assertEquals(OrderStatus.COMPLETED, order.getStatus());
+            assertDomainEventForStatues(order, OrderStatus.ASSIGNED, OrderStatus.COMPLETED);
         }
     }
 
@@ -137,6 +142,7 @@ class OrderTest {
 
             assertTrue(result.isSuccess());
             assertEquals(OrderStatus.COMPLETED, order.getStatus());
+            assertDomainEventForStatues(order, OrderStatus.ASSIGNED, OrderStatus.COMPLETED);
         }
 
         @Test
@@ -149,6 +155,7 @@ class OrderTest {
             assertTrue(result.isFailure());
             assertNotNull(result.getError());
             assertEquals(OrderStatus.CREATED, order.getStatus());
+            assertDomainEventForStatues(order);
         }
 
         @Test
@@ -163,6 +170,7 @@ class OrderTest {
             assertTrue(result.isFailure());
             assertNotNull(result.getError());
             assertEquals(OrderStatus.COMPLETED, order.getStatus());
+            assertDomainEventForStatues(order, OrderStatus.ASSIGNED, OrderStatus.COMPLETED);
         }
     }
 
@@ -184,6 +192,7 @@ class OrderTest {
             var completeResult = order.complete();
             assertTrue(completeResult.isSuccess());
             assertEquals(OrderStatus.COMPLETED, order.getStatus());
+            assertDomainEventForStatues(order, OrderStatus.ASSIGNED, OrderStatus.COMPLETED);
         }
 
         @Test
@@ -195,6 +204,8 @@ class OrderTest {
 
             assertTrue(completeResult.isFailure());
             assertEquals(OrderStatus.CREATED, order.getStatus());
+            assertTrue(order.getDomainEvents().isEmpty());
+            assertDomainEventForStatues(order);
         }
     }
 
@@ -203,5 +214,22 @@ class OrderTest {
         var location = Location.mustCreate(5, 5);
         var volume = Volume.mustCreate(10);
         return Order.mustCreate(id, location, volume);
+    }
+
+    private static void assertDomainEventForStatues(Order order, OrderStatus... statuses) {
+        var domainEvents = order.getDomainEvents();
+        assertEquals(statuses.length, domainEvents.size(), "Domain events size mismatch");
+
+        for (int i = 0; i < statuses.length; i++) {
+            var event = domainEvents.get(i);
+            switch (statuses[i]) {
+                case ASSIGNED ->
+                        assertEquals(order.getId(), ((OrderAssignedEvent) event).getOrderId());
+                case COMPLETED ->
+                        assertEquals(order.getId(), ((OrderCompletedEvent) event).getOrderId());
+                case CREATED ->
+                    throw new IllegalArgumentException("Status CREATED has no domain event");
+            }
+        }
     }
 }

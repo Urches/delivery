@@ -44,12 +44,10 @@ class CreateBasketOrderCommandHandlerTest {
     void shouldCreateOrderWithMultipleItems() {
         // Arrange
         UUID basketId = UUID.randomUUID();
-        var items = List.of(
-                new CreateBasketOrderCommand.BasketItem("item-1", "good-1", "Product 1", 100.0, 2),
+        var items = List.of(new CreateBasketOrderCommand.BasketItem("item-1", "good-1", "Product 1", 100.0, 2),
                 new CreateBasketOrderCommand.BasketItem("item-2", "good-2", "Product 2", 200.0, 1));
 
-        var command = CreateBasketOrderCommand.create(basketId, "Russia", "Moscow", "Lenina", "25",
-                "30", 15, items);
+        var command = CreateBasketOrderCommand.create(basketId, "Russia", "Moscow", "Lenina", "25", "30", 15, items);
 
         when(geoClientPort.getGeolocationByStreet("Lenina")).thenReturn(Result.success(Location.mustCreate(3, 4)));
 
@@ -71,8 +69,8 @@ class CreateBasketOrderCommandHandlerTest {
     void shouldReturnErrorWhenGeoServiceFails() {
         // Arrange
         UUID basketId = UUID.randomUUID();
-        var command = CreateBasketOrderCommand.create(basketId, "Russia", "Moscow",
-                "Unknown Street", "1", "1", 5, List.of());
+        var command = CreateBasketOrderCommand.create(basketId, "Russia", "Moscow", "Unknown Street", "1", "1", 5,
+                List.of());
 
         var expectedError = Error.of("geo.error", "Street not found");
         when(geoClientPort.getGeolocationByStreet("Unknown Street")).thenReturn(Result.failure(expectedError));

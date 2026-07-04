@@ -1,14 +1,15 @@
 package microarch.delivery.core.application.command.assignment;
 
+import libs.ddd.DomainEventPublisher;
 import libs.errs.Error;
 import libs.errs.GeneralErrors;
 import libs.errs.Result;
 import lombok.RequiredArgsConstructor;
-import microarch.delivery.core.domain.model.courier.Courier;
-import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.service.OrderDispatchService;
 import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.OrderRepository;
+
+import java.util.List;
 
 /**
  * Обработчик команды на назначение заказа курьеру.
@@ -19,6 +20,7 @@ public class AssignOrderCommandHandler {
     private final OrderRepository orderRepository;
     private final CourierRepository courierRepository;
     private final OrderDispatchService dispatchService;
+    private final DomainEventPublisher domainEventPublisher;
 
     public Result<Void, Error> handle(AssignOrderCommand command) {
         // Получаем 1 любой не назначенный заказ из БД (со статусом CREATED)
@@ -38,9 +40,11 @@ public class AssignOrderCommandHandler {
         }
 
         // Сохраняем изменения в БД (курьер и заказ уже обновлены в памяти)
-        courierRepository.update(dispatchResult.getValue());
+        var courier = dispatchResult.getValue();
+        courierRepository.update(courier);
         orderRepository.update(order);
 
+        domainEventPublisher.publish(List.of(order));
         return Result.success();
     }
 }
