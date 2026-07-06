@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import libs.errs.Result;
+import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.ports.CourierRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,19 +43,18 @@ class CreateCourierCommandHandlerTest {
     void shouldCreateCourierSuccessfully() {
         // Arrange
         String courierName = "Ivan";
-        CreateCourierCommand command = CreateCourierCommand.create(courierName).getValueOrThrow();
+        var command = CreateCourierCommand.create(courierName).getValueOrThrow();
 
         // Act
-        Result<microarch.delivery.core.domain.model.courier.Courier, ?> result = handler.handle(command);
+        var result = handler.handle(command);
 
         // Assert
         assertThat(result.isSuccess()).isTrue();
 
-        ArgumentCaptor<microarch.delivery.core.domain.model.courier.Courier> courierCaptor = ArgumentCaptor
-                .forClass(microarch.delivery.core.domain.model.courier.Courier.class);
+        var courierCaptor = ArgumentCaptor.forClass(Courier.class);
         verify(courierRepository, times(1)).save(courierCaptor.capture());
 
-        microarch.delivery.core.domain.model.courier.Courier savedCourier = courierCaptor.getValue();
+        var savedCourier = courierCaptor.getValue();
         assertThat(savedCourier.getName()).isEqualTo(courierName);
         assertThat(savedCourier.getLocation()).isNotNull();
         assertThat(savedCourier.getLocation().getX()).isEqualTo(6);
@@ -70,9 +70,9 @@ class CreateCourierCommandHandlerTest {
         CreateCourierCommand command3 = CreateCourierCommand.create("Courier3").getValueOrThrow();
 
         // Act
-        Result<microarch.delivery.core.domain.model.courier.Courier, ?> result1 = handler.handle(command1);
-        Result<microarch.delivery.core.domain.model.courier.Courier, ?> result2 = handler.handle(command2);
-        Result<microarch.delivery.core.domain.model.courier.Courier, ?> result3 = handler.handle(command3);
+        Result<Courier, ?> result1 = handler.handle(command1);
+        Result<Courier, ?> result2 = handler.handle(command2);
+        Result<Courier, ?> result3 = handler.handle(command3);
 
         // Assert
         assertThat(result1.isSuccess()).isTrue();

@@ -1,12 +1,6 @@
 package microarch.delivery.adapters.in.jobs;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import libs.errs.Result;
-import microarch.delivery.adapters.in.jobs.AssignOrderJob;
 import microarch.delivery.core.application.command.AssignOrderCommand;
 import microarch.delivery.core.application.command.AssignOrderCommandHandler;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.quartz.JobExecutionContext;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit тесты для AssignOrderJob.
@@ -35,7 +32,7 @@ class AssignOrderJobTest {
     @Test
     void shouldExecuteJobSuccessfully() {
         // Arrange
-        JobExecutionContext context = mock(JobExecutionContext.class);
+        var context = mock(JobExecutionContext.class);
         when(assignOrderCommandHandler.handle(any(AssignOrderCommand.class))).thenReturn(Result.success());
 
         // Act
