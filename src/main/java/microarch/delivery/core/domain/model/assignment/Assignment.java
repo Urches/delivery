@@ -50,16 +50,19 @@ public class Assignment extends BaseEntity<UUID> {
      * Assignment может быть создан только с установленным OrderId, Volume, Location. Статус автоматически
      * устанавливается в ASSIGNED.
      *
-     * @param id       уникальный идентификатор назначения (UUID)
-     * @param orderId  идентификатор заказа (UUID)
-     * @param volume   объем заказа (Volume)
-     * @param location местоположение заказа (Location)
+     * @param id
+     *            уникальный идентификатор назначения (UUID)
+     * @param orderId
+     *            идентификатор заказа (UUID)
+     * @param volume
+     *            объем заказа (Volume)
+     * @param location
+     *            местоположение заказа (Location)
+     *
      * @return Result с Assignment при успехе или Error при неудаче
      */
     public static Result<Assignment, Error> create(UUID id, UUID orderId, Volume volume, Location location) {
-        var error = Guard.combine(
-                Guard.againstNullOrEmpty(id, "id"),
-                Guard.againstNullOrEmpty(orderId, "orderId"),
+        var error = Guard.combine(Guard.againstNullOrEmpty(id, "id"), Guard.againstNullOrEmpty(orderId, "orderId"),
                 volume == null ? GeneralErrors.valueIsRequired("volume") : null,
                 location == null ? GeneralErrors.valueIsRequired("location") : null);
 
@@ -79,7 +82,9 @@ public class Assignment extends BaseEntity<UUID> {
      * <p>
      * Assignment можно завершить только, если курьер находится в одной клетке или ближе от Location заказа.
      *
-     * @param courierLocation текущее местоположение курьера
+     * @param courierLocation
+     *            текущее местоположение курьера
+     *
      * @return Result с void при успехе или Error при неудаче
      */
     public Result<Void, Error> complete(Location courierLocation) {
@@ -102,7 +107,9 @@ public class Assignment extends BaseEntity<UUID> {
      * Assignment может быть завершен, если: - статус не COMPLETED - курьер находится на расстоянии не более 1 от
      * Location заказа
      *
-     * @param courierLocation текущее местоположение курьера
+     * @param courierLocation
+     *            текущее местоположение курьера
+     *
      * @return ReasonedResult с true при успехе или причинами отказа при неудаче
      */
     public ReasonedResult<Boolean> canBeCompleted(Location courierLocation) {

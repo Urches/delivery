@@ -46,9 +46,13 @@ public class Order extends Aggregate<UUID> {
      * <p>
      * Заказ может быть создан при передаче Id, Location, Volume. При создании заказа проставляется статус CREATED.
      *
-     * @param id       уникальный идентификатор заказа (UUID)
-     * @param location местоположение доставки (Location)
-     * @param volume   объем заказа (Volume)
+     * @param id
+     *            уникальный идентификатор заказа (UUID)
+     * @param location
+     *            местоположение доставки (Location)
+     * @param volume
+     *            объем заказа (Volume)
+     *
      * @return Result с Order при успехе или Error при неудаче
      */
     public static Result<Order, Error> create(UUID id, Location location, Volume volume) {

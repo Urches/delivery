@@ -51,4 +51,11 @@ public interface OrderRepository {
      * @return список заказов в статусе ASSIGNED
      */
     List<Order> getAllAssigned();
+
+    /**
+     * Получает все незавершенные заказы (в статусах CREATED и ASSIGNED).
+     *
+     * @return список незавершенных заказов
+     */
+    List<Order> getAllNotCompleted();
 }

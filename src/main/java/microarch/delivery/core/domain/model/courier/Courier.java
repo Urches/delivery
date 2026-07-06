@@ -56,15 +56,17 @@ public class Courier extends Aggregate<UUID> {
      * <p>
      * Курьер может быть создан при передаче Name, Location. MaxVolume автоматически устанавливается в 20.
      *
-     * @param id       уникальный идентификатор курьера (UUID)
-     * @param name     имя курьера (String)
-     * @param location местоположение курьера (Location)
+     * @param id
+     *            уникальный идентификатор курьера (UUID)
+     * @param name
+     *            имя курьера (String)
+     * @param location
+     *            местоположение курьера (Location)
+     *
      * @return Result с Courier при успехе или Error при неудаче
      */
     public static Result<Courier, Error> create(UUID id, String name, Location location) {
-        var error = Guard.combine(
-                Guard.againstNullOrEmpty(id, "id"),
-                Guard.againstNullOrEmpty(name, "name"),
+        var error = Guard.combine(Guard.againstNullOrEmpty(id, "id"), Guard.againstNullOrEmpty(name, "name"),
                 location == null ? GeneralErrors.valueIsRequired("location") : null);
 
         if (error != null) {
@@ -85,14 +87,15 @@ public class Courier extends Aggregate<UUID> {
      * Курьер может брать новые заказы, если сумма объемов всех заказов с учетом нового не превышает максимум (20
      * литров).
      *
-     * @param order - заказ, который нужно проверить
+     * @param order
+     *            - заказ, который нужно проверить
+     *
      * @return ReasonedResult с true при успехе или причинами отказа при неудаче
      */
     public ReasonedResult<Boolean> canTakeOrder(Order order) {
         Objects.requireNonNull(order, "Order must not be null");
 
-        var newCurrentVolumeResult = getCurrentVolume()
-                .map(volume -> volume.plus(order.getVolume()))
+        var newCurrentVolumeResult = getCurrentVolume().map(volume -> volume.plus(order.getVolume()))
                 .orElse(Result.success(order.getVolume()));
 
         if (newCurrentVolumeResult.isFailure()) {
@@ -104,8 +107,7 @@ public class Courier extends Aggregate<UUID> {
             return ReasonedResult.withNoReason(true);
         } else {
             return ReasonedResult.withReason(false, String.format(
-                    "Cannot take assignment: new volume (%s) exceeds max volume (%s)",
-                    newVolumeCandidate, maxVolume));
+                    "Cannot take assignment: new volume (%s) exceeds max volume (%s)", newVolumeCandidate, maxVolume));
         }
     }
 
@@ -114,7 +116,9 @@ public class Courier extends Aggregate<UUID> {
      * <p>
      * Если курьер взял заказ, то создаётся Assignment и добавляется assignments.
      *
-     * @param order - заказ
+     * @param order
+     *            - заказ
+     *
      * @return Result с void при успехе или Error при неудаче
      */
     public Result<Void, Error> takeOrder(Order order) {
@@ -126,8 +130,7 @@ public class Courier extends Aggregate<UUID> {
             return Result.failure(GeneralErrors
                     .invalidOperation(String.format("Cannot take order. Reasons: %s", result.getReasons())));
         } else {
-            var newCurrentVolumeResult = getCurrentVolume()
-                    .map(volume -> volume.plus(order.getVolume()))
+            var newCurrentVolumeResult = getCurrentVolume().map(volume -> volume.plus(order.getVolume()))
                     .orElse(Result.success(order.getVolume()));
 
             if (newCurrentVolumeResult.isFailure()) {
@@ -135,7 +138,8 @@ public class Courier extends Aggregate<UUID> {
                         .invalidOperation(String.format("Cannot take order. Reasons: %s", result.getReasons())));
             }
 
-            var assignmentResult = Assignment.create(UUID.randomUUID(), order.getId(), order.getVolume(), order.getLocation());
+            var assignmentResult = Assignment.create(UUID.randomUUID(), order.getId(), order.getVolume(),
+                    order.getLocation());
             if (assignmentResult.isFailure()) {
                 return Result.failure(GeneralErrors
                         .invalidOperation(String.format("Cannot take order. Reasons: %s", result.getReasons())));
@@ -165,7 +169,9 @@ public class Courier extends Aggregate<UUID> {
      * <p>
      * Курьер может переместиться в любой валидный Location.
      *
-     * @param newLocation новое местоположение курьера
+     * @param newLocation
+     *            новое местоположение курьера
+     *
      * @return Result с void при успехе или Error при неудаче
      */
     public Result<Void, Error> move(Location newLocation) {
@@ -179,8 +185,7 @@ public class Courier extends Aggregate<UUID> {
      * @return возвращает суммарный Volume всех заказов
      */
     public Optional<Volume> getCurrentVolume() {
-        return this.assignments.stream()
-                .map(Assignment::getVolume)
+        return this.assignments.stream().map(Assignment::getVolume)
                 .reduce((first, second) -> first.plus(second).getValueOrThrow());
     }
 }

@@ -55,4 +55,12 @@ public class OrderRepositoryImpl implements OrderRepository {
                 .map(OrderJpaEntity::toDomain)
                 .toList();
     }
+
+    @Override
+    public List<Order> getAllNotCompleted() {
+        return jpaRepository.findNotCompletedOrders()
+                .stream()
+                .map(OrderJpaEntity::toDomain)
+                .toList();
+    }
 }
