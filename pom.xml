@@ -197,7 +197,10 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.19.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

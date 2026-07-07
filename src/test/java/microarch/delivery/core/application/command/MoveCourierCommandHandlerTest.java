@@ -39,7 +39,8 @@ class MoveCourierCommandHandlerTest {
         UUID courierId = UUID.randomUUID();
         int newX = 5;
         int newY = 7;
-        var command = MoveCourierCommand.create(courierId, newX, newY).getValueOrThrow();
+        var newLocation = Location.mustCreate(newX, newY);
+        var command = MoveCourierCommand.create(courierId, newLocation).getValueOrThrow();
 
         Courier courier = Courier.mustCreate(courierId, "Test Courier", Location.mustCreate(1, 1));
         when(courierRepository.getById(courierId)).thenReturn(Optional.of(courier));
@@ -62,7 +63,7 @@ class MoveCourierCommandHandlerTest {
     void shouldThrowExceptionWhenCourierNotFound() {
         // Arrange
         UUID courierId = UUID.randomUUID();
-        MoveCourierCommand command = MoveCourierCommand.create(courierId, 5, 7).getValueOrThrow();
+        MoveCourierCommand command = MoveCourierCommand.create(courierId, Location.mustCreate(5, 7)).getValueOrThrow();
 
         when(courierRepository.getById(courierId)).thenReturn(Optional.empty());
 

@@ -16,15 +16,16 @@ public class CreateOrderCommandHandler {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public Result<Void, Error> handle(CreateOrderCommand command) {
+    public Result<Order, Error> handle(CreateOrderCommand command) {
         // Создаем заказ
-        var order = Order.create(command.getOrderId(), command.getLocation(), command.getVolume());
-        if (order.isFailure()) {
-            return Result.failure(order.getError());
+        var orderResult = Order.create(command.getOrderId(), command.getLocation(), command.getVolume());
+        if (orderResult.isFailure()) {
+            return Result.failure(orderResult.getError());
         }
 
         // Сохраняем заказ в репозиторий
-        orderRepository.save(order.getValue());
-        return Result.success();
+        var order = orderResult.getValue();
+        orderRepository.save(order);
+        return Result.success(order);
     }
 }
