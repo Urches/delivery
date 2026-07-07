@@ -23,7 +23,12 @@ public class MoveCourierController implements MoveCourierApi {
 
     @Override
     public ResponseEntity<Void> moveCourier(UUID courierId, Location location) {
-        var result = MoveCourierCommand.create(courierId, HttpMapper.toDomainLocation(location))
+        var locationResult = HttpMapper.toDomainLocation(location);
+        if (locationResult.isFailure()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        var result = MoveCourierCommand.create(courierId, locationResult.getValue())
                 .flatMap(moveCourierCommandHandler::handle);
 
         if (result.isFailure()) {

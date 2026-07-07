@@ -1,5 +1,7 @@
 package microarch.delivery.adapters.in.http.mappers;
 
+import libs.errs.Error;
+import libs.errs.Result;
 import microarch.delivery.adapters.in.http.model.Courier;
 import microarch.delivery.adapters.in.http.model.Location;
 import microarch.delivery.adapters.in.http.model.Order;
@@ -54,9 +56,8 @@ public class HttpMapper {
     /**
      * Преобразует HTTP Location в доменную Location.
      */
-    public static microarch.delivery.core.domain.model.Location toDomainLocation(Location httpLocation) {
-        return microarch.delivery.core.domain.model.Location.create(httpLocation.getX(), httpLocation.getY())
-                .getValue();
+    public static Result<microarch.delivery.core.domain.model.Location, Error> toDomainLocation(Location httpLocation) {
+        return microarch.delivery.core.domain.model.Location.create(httpLocation.getX(), httpLocation.getY());
     }
 
     /**
