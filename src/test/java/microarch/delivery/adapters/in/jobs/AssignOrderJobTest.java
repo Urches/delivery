@@ -1,12 +1,6 @@
 package microarch.delivery.adapters.in.jobs;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import libs.errs.Result;
-import microarch.delivery.adapters.in.jobs.AssignOrderJob;
 import microarch.delivery.core.application.command.AssignOrderCommand;
 import microarch.delivery.core.application.command.AssignOrderCommandHandler;
 import org.junit.jupiter.api.BeforeEach;

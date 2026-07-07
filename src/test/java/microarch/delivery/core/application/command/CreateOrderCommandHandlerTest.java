@@ -4,7 +4,6 @@ import libs.errs.Error;
 import libs.errs.Result;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.order.Order;
-import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.order.OrderStatus;
 import microarch.delivery.core.ports.GeoClientPort;
 import microarch.delivery.core.ports.OrderRepository;
@@ -16,11 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

@@ -1,16 +1,10 @@
 package microarch.delivery.adapters.out.grpc;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
-
 import clients.geo.GeoGrpc;
 import clients.geo.GeoProto;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import java.io.IOException;
-import java.net.ServerSocket;
 import lombok.extern.slf4j.Slf4j;
 import microarch.delivery.ApplicationProperties;
 import org.junit.jupiter.api.AfterEach;
@@ -18,8 +12,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Интеграционный тест для GrpcGeoClientAdapter с реальным gRPC сервером.
