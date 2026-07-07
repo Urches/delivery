@@ -16,6 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.quartz.JobExecutionContext;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 /**
  * Unit тесты для AssignOrderJob.
  */
@@ -35,7 +38,7 @@ class AssignOrderJobTest {
     @Test
     void shouldExecuteJobSuccessfully() {
         // Arrange
-        JobExecutionContext context = mock(JobExecutionContext.class);
+        var context = mock(JobExecutionContext.class);
         when(assignOrderCommandHandler.handle(any(AssignOrderCommand.class))).thenReturn(Result.success());
 
         // Act

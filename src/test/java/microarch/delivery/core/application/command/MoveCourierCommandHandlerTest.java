@@ -39,7 +39,7 @@ class MoveCourierCommandHandlerTest {
         UUID courierId = UUID.randomUUID();
         int newX = 5;
         int newY = 7;
-        Location newLocation = Location.mustCreate(newX, newY);
+        var newLocation = Location.mustCreate(newX, newY);
         var command = MoveCourierCommand.create(courierId, newLocation).getValueOrThrow();
 
         Courier courier = Courier.mustCreate(courierId, "Test Courier", Location.mustCreate(1, 1));

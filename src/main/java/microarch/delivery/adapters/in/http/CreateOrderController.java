@@ -23,11 +23,15 @@ public class CreateOrderController implements CreateOrderApi {
     public ResponseEntity<CreateOrderResponse> createOrder(NewOrder newOrder) {
         // Преобразуем HTTP модель в команду
         var address = newOrder.getAddress();
-        var command = CreateOrderCommand.create(newOrder.getId(), address.getCountry(), address.getCity(),
-                address.getStreet(), address.getHouse(), address.getApartment(), newOrder.getVolume())
-                .getValueOrThrow();
+        var commandResult = CreateOrderCommand.create(newOrder.getId(), address.getCountry(), address.getCity(),
+                address.getStreet(), address.getHouse(), address.getApartment(), newOrder.getVolume());
+
+        if (commandResult.isFailure()) {
+            return ResponseEntity.badRequest().build();
+        }
 
         // Выполняем команду
+        var command = commandResult.getValue();
         var result = createOrderCommandHandler.handle(command);
 
         if (result.isFailure()) {

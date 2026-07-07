@@ -4,6 +4,7 @@ import libs.errs.Error;
 import libs.errs.Result;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.order.Order;
+import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.order.OrderStatus;
 import microarch.delivery.core.ports.GeoClientPort;
 import microarch.delivery.core.ports.OrderRepository;
@@ -15,6 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,14 +50,14 @@ class CreateOrderCommandHandlerTest {
     void shouldCreateOrderSuccessfully() {
         // Arrange
         UUID orderId = UUID.randomUUID();
-        CreateOrderCommand command = CreateOrderCommand.create(orderId, "Russia", "Moscow", "Tverskaya", "10", "5", 5)
+        var command = CreateOrderCommand.create(orderId, "Russia", "Moscow", "Tverskaya", "10", "5", 5)
                 .getValueOrThrow();
 
         // Mock GeoClientPort to return a valid location
         when(geoClientPort.getGeolocationByStreet(anyString())).thenReturn(Result.success(Location.mustCreate(5, 5)));
 
         // Act
-        Result<Order, ?> result = handler.handle(command);
+        var result = handler.handle(command);
 
         // Assert
         assertThat(result.isSuccess()).isTrue();
@@ -59,7 +65,7 @@ class CreateOrderCommandHandlerTest {
         ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
         verify(orderRepository, times(1)).save(orderCaptor.capture());
 
-        Order savedOrder = orderCaptor.getValue();
+        var savedOrder = orderCaptor.getValue();
         assertThat(savedOrder.getId()).isEqualTo(orderId);
         assertThat(savedOrder.getVolume().getValue()).isEqualTo(5);
         assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.CREATED);
@@ -71,9 +77,9 @@ class CreateOrderCommandHandlerTest {
     @Test
     void shouldCreateOrderWithDifferentVolumes() {
         // Arrange
-        CreateOrderCommand command1 = CreateOrderCommand
+        var command1 = CreateOrderCommand
                 .create(UUID.randomUUID(), "Russia", "Moscow", "Street1", "1", "1", 1).getValueOrThrow();
-        CreateOrderCommand command2 = CreateOrderCommand
+        var command2 = CreateOrderCommand
                 .create(UUID.randomUUID(), "Russia", "Moscow", "Street2", "2", "2", 15).getValueOrThrow();
 
         // Mock GeoClientPort to return valid locations
@@ -81,8 +87,8 @@ class CreateOrderCommandHandlerTest {
         when(geoClientPort.getGeolocationByStreet("Street2")).thenReturn(Result.success(Location.mustCreate(2, 2)));
 
         // Act
-        Result<Order, ?> result1 = handler.handle(command1);
-        Result<Order, ?> result2 = handler.handle(command2);
+        var result1 = handler.handle(command1);
+        var result2 = handler.handle(command2);
 
         // Assert
         assertThat(result1.isSuccess()).isTrue();
