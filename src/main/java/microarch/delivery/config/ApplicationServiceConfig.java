@@ -1,14 +1,14 @@
 package microarch.delivery.config;
 
-import microarch.delivery.core.application.command.assignment.AssignOrderCommandHandler;
-import microarch.delivery.core.application.command.assignment.CompleteOrderCommandHandler;
-import microarch.delivery.core.application.command.courier.CreateCourierCommandHandler;
-import microarch.delivery.core.application.command.courier.MoveCourierCommandHandler;
+import microarch.delivery.core.application.command.AssignOrderCommandHandler;
+import microarch.delivery.core.application.command.CompleteOrderCommandHandler;
+import microarch.delivery.core.application.command.CreateCourierCommandHandler;
+import microarch.delivery.core.application.command.MoveCourierCommandHandler;
 import microarch.delivery.core.application.command.order.CreateBasketOrderCommandHandler;
-import microarch.delivery.core.application.command.order.CreateOrderCommandHandler;
-import microarch.delivery.core.application.query.courier.GetAllCouriersQueryHandler;
-import microarch.delivery.core.application.query.order.GetNotCompletedOrdersQueryHandler;
-import microarch.delivery.core.domain.service.OrderDispatchService;
+import microarch.delivery.core.application.command.CreateOrderCommandHandler;
+import microarch.delivery.core.application.query.GetAllCouriersQueryHandler;
+import microarch.delivery.core.application.query.GetNotCompletedOrdersQueryHandler;
+import microarch.delivery.core.domain.services.OrderDispatchService;
 import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.GeoClientPort;
 import microarch.delivery.core.ports.OrderRepository;

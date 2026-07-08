@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import microarch.delivery.adapters.in.http.api.MoveCourierApi;
 import microarch.delivery.adapters.in.http.mappers.HttpMapper;
 import microarch.delivery.adapters.in.http.model.Location;
-import microarch.delivery.core.application.command.courier.MoveCourierCommand;
-import microarch.delivery.core.application.command.courier.MoveCourierCommandHandler;
+import microarch.delivery.core.application.command.MoveCourierCommand;
+import microarch.delivery.core.application.command.MoveCourierCommandHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +23,12 @@ public class MoveCourierController implements MoveCourierApi {
 
     @Override
     public ResponseEntity<Void> moveCourier(UUID courierId, Location location) {
-        var result = MoveCourierCommand.create(courierId, HttpMapper.toDomainLocation(location))
+        var locationResult = HttpMapper.toDomainLocation(location);
+        if (locationResult.isFailure()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        var result = MoveCourierCommand.create(courierId, locationResult.getValue())
                 .flatMap(moveCourierCommandHandler::handle);
 
         if (result.isFailure()) {

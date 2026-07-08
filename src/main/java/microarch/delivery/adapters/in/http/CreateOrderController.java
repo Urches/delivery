@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import microarch.delivery.adapters.in.http.api.CreateOrderApi;
 import microarch.delivery.adapters.in.http.model.CreateOrderResponse;
 import microarch.delivery.adapters.in.http.model.NewOrder;
-import microarch.delivery.core.application.command.order.CreateOrderCommand;
-import microarch.delivery.core.application.command.order.CreateOrderCommandHandler;
+import microarch.delivery.core.application.command.CreateOrderCommand;
+import microarch.delivery.core.application.command.CreateOrderCommandHandler;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,11 +23,15 @@ public class CreateOrderController implements CreateOrderApi {
     public ResponseEntity<CreateOrderResponse> createOrder(NewOrder newOrder) {
         // Преобразуем HTTP модель в команду
         var address = newOrder.getAddress();
-        var command = CreateOrderCommand.create(newOrder.getId(), address.getCountry(), address.getCity(),
-                address.getStreet(), address.getHouse(), address.getApartment(), newOrder.getVolume())
-                .getValueOrThrow();
+        var commandResult = CreateOrderCommand.create(newOrder.getId(), address.getCountry(), address.getCity(),
+                address.getStreet(), address.getHouse(), address.getApartment(), newOrder.getVolume());
+
+        if (commandResult.isFailure()) {
+            return ResponseEntity.badRequest().build();
+        }
 
         // Выполняем команду
+        var command = commandResult.getValue();
         var result = createOrderCommandHandler.handle(command);
 
         if (result.isFailure()) {

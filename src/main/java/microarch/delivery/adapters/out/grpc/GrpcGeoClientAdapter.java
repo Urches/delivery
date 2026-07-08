@@ -21,13 +21,11 @@ import libs.errs.Result;
 @Component
 public class GrpcGeoClientAdapter implements GeoClientPort {
 
-    private final ApplicationProperties properties;
     private final ManagedChannel channel;
     private final GeoGrpc.GeoBlockingStub geoBlockingStub;
 
     @Autowired
     public GrpcGeoClientAdapter(ApplicationProperties properties) {
-        this.properties = properties;
         var grpc = properties.getGrpc().getGeoService();
         this.channel = ManagedChannelBuilder.forAddress(grpc.getHost(), grpc.getPort()).usePlaintext().build();
         this.geoBlockingStub = GeoGrpc.newBlockingStub(channel);

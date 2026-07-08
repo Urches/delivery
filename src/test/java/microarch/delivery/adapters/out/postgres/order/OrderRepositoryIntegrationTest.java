@@ -128,16 +128,16 @@ class OrderRepositoryIntegrationTest extends PostgresIntegrationTestBase {
 
         orderRepository.save(order);
 
-        var getResultBefore = orderRepository.getById(id);
-        assertThat(getResultBefore).isPresent();
-        assertThat(getResultBefore.get().getStatus()).isEqualTo(OrderStatus.CREATED);
+        var before = orderRepository.getById(id);
+        assertThat(before).isPresent();
+        assertThat(before.get().getStatus()).isEqualTo(OrderStatus.CREATED);
 
         order.assign();
         orderRepository.update(order);
 
-        var getResultAfter = orderRepository.getById(id);
-        assertThat(getResultAfter).isPresent();
-        assertThat(getResultAfter.get().getStatus()).isEqualTo(OrderStatus.ASSIGNED);
+        var result = orderRepository.getById(id);
+        assertThat(result).isPresent();
+        assertThat(result.get().getStatus()).isEqualTo(OrderStatus.ASSIGNED);
     }
 
     @Test
@@ -151,9 +151,9 @@ class OrderRepositoryIntegrationTest extends PostgresIntegrationTestBase {
         order.complete();
         orderRepository.update(order);
 
-        var getResult = orderRepository.getById(id);
-        assertThat(getResult).isPresent();
-        assertThat(getResult.get().getStatus()).isEqualTo(OrderStatus.COMPLETED);
+        var result = orderRepository.getById(id);
+        assertThat(result).isPresent();
+        assertThat(result.get().getStatus()).isEqualTo(OrderStatus.COMPLETED);
     }
 
     @Test
