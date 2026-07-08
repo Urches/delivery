@@ -1,11 +1,5 @@
 package microarch.delivery.core.application.command;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import libs.errs.Result;
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.ports.CourierRepository;
@@ -17,7 +11,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Random;
-import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit тесты для CreateCourierCommandHandler.

@@ -23,9 +23,6 @@ public final class CreateOrderCommand {
     private final String house;
     private final String apartment;
     private final Volume volume;
-    private final Location location;
-
-    private static final Location DEFAULT_LOCATION = Location.mustCreate(1, 1);
 
     public static Result<CreateOrderCommand, Error> create(UUID orderId, String country, String city, String street,
             String house, String apartment, int volume) {
@@ -39,7 +36,7 @@ public final class CreateOrderCommand {
         if (error != null) {
             return Result.failure(error);
         }
-        return Result.success(new CreateOrderCommand(orderId, country, city, street, house, apartment,
-                volumeResult.getValue(), DEFAULT_LOCATION));
+        return Result.success(
+                new CreateOrderCommand(orderId, country, city, street, house, apartment, volumeResult.getValue()));
     }
 }
