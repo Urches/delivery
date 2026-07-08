@@ -1,4 +1,4 @@
-package microarch.delivery.core.application.command.order;
+package microarch.delivery.core.application.command;
 
 import libs.errs.Error;
 import libs.errs.Result;
@@ -31,7 +31,12 @@ public class CreateBasketOrderCommandHandler {
         var location = locationResult.getValue();
 
         // Создаем заказ с объемом из события
-        var orderResult = Order.create(command.getBasketId(), location, Volume.mustCreate(command.getVolume()));
+        var volumeResult = Volume.create(command.getVolume());
+        if (volumeResult.isFailure()) {
+            return Result.failure(volumeResult.getError());
+        }
+
+        var orderResult = Order.create(command.getBasketId(), location, volumeResult.getValue());
         if (orderResult.isFailure()) {
             return Result.failure(orderResult.getError());
         }

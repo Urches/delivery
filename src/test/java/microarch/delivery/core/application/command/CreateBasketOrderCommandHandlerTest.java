@@ -1,9 +1,7 @@
-package microarch.delivery.core.application.order;
+package microarch.delivery.core.application.command;
 
 import libs.errs.Error;
 import libs.errs.Result;
-import microarch.delivery.core.application.command.order.CreateBasketOrderCommand;
-import microarch.delivery.core.application.command.order.CreateBasketOrderCommandHandler;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.ports.GeoClientPort;
@@ -54,7 +52,7 @@ class CreateBasketOrderCommandHandlerTest {
         when(geoClientPort.getGeolocationByStreet("Lenina")).thenReturn(Result.success(Location.mustCreate(3, 4)));
 
         // Act
-        Result<Order, Error> result = handler.handle(command);
+        var result = handler.handle(command);
 
         // Assert
         assertThat(result.isSuccess()).isTrue();

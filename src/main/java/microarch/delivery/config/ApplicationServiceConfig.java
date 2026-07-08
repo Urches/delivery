@@ -4,7 +4,7 @@ import microarch.delivery.core.application.command.AssignOrderCommandHandler;
 import microarch.delivery.core.application.command.CompleteOrderCommandHandler;
 import microarch.delivery.core.application.command.CreateCourierCommandHandler;
 import microarch.delivery.core.application.command.MoveCourierCommandHandler;
-import microarch.delivery.core.application.command.order.CreateBasketOrderCommandHandler;
+import microarch.delivery.core.application.command.CreateBasketOrderCommandHandler;
 import microarch.delivery.core.application.command.CreateOrderCommandHandler;
 import microarch.delivery.core.application.query.GetAllCouriersQueryHandler;
 import microarch.delivery.core.application.query.GetNotCompletedOrdersQueryHandler;

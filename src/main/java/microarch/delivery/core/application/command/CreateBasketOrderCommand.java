@@ -1,4 +1,4 @@
-package microarch.delivery.core.application.command.order;
+package microarch.delivery.core.application.command;
 
 import lombok.Getter;
 
@@ -20,7 +20,7 @@ public final class CreateBasketOrderCommand {
     private final List<BasketItem> items;
 
     private CreateBasketOrderCommand(UUID basketId, String country, String city, String street, String house,
-            String apartment, int volume, List<BasketItem> items) {
+                                     String apartment, int volume, List<BasketItem> items) {
         this.basketId = basketId;
         this.country = country;
         this.city = city;
@@ -35,7 +35,7 @@ public final class CreateBasketOrderCommand {
      * Фабричный метод для создания команды из примитивов.
      */
     public static CreateBasketOrderCommand create(UUID basketId, String country, String city, String street,
-            String house, String apartment, int volume, List<BasketItem> items) {
+                                                  String house, String apartment, int volume, List<BasketItem> items) {
         return new CreateBasketOrderCommand(basketId, country, city, street, house, apartment, volume, items);
     }
 

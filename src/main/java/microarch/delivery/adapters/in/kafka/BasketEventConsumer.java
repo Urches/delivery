@@ -1,10 +1,11 @@
 package microarch.delivery.adapters.in.kafka;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import libs.errs.DomainInvariantException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import microarch.delivery.core.application.command.order.CreateBasketOrderCommand;
-import microarch.delivery.core.application.command.order.CreateBasketOrderCommandHandler;
+import microarch.delivery.core.application.command.CreateBasketOrderCommand;
+import microarch.delivery.core.application.command.CreateBasketOrderCommandHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import queues.basket.events.BasketEventsProto;
@@ -29,20 +30,27 @@ public class BasketEventConsumer {
 
             var basketId = UUID.fromString(event.getBasketId());
             var address = event.getAddress();
-            var items = event.getItemsList().stream().map(item -> new CreateBasketOrderCommand.BasketItem(item.getId(),
-                    item.getGoodId(), item.getTitle(), item.getPrice(), item.getQuantity())).toList();
+            var items = event.getItemsList().stream().map(BasketEventConsumer::toBasketItem).toList();
 
             var command = CreateBasketOrderCommand.create(basketId, address.getCountry(), address.getCity(),
                     address.getStreet(), address.getHouse(), address.getApartment(), event.getVolume(), items);
 
             var result = createBasketOrderCommandHandler.handle(command);
             if (result.isFailure()) {
-                log.error("Failed to create order for basket {}: {}", event.getBasketId(), result.getError());
-                return;
+                throw new DomainInvariantException(result.getError());
             }
             log.info("Order {} successfully created for basket: {}", result.getValue().getId(), event.getBasketId());
         } catch (InvalidProtocolBufferException ex) {
             throw new RuntimeException("Failed to parse protobuf message", ex);
         }
+    }
+
+    private static CreateBasketOrderCommand.BasketItem toBasketItem(BasketEventsProto.Item item) {
+        return new CreateBasketOrderCommand.BasketItem(
+                item.getId(),
+                item.getGoodId(),
+                item.getTitle(),
+                item.getPrice(),
+                item.getQuantity());
     }
 }
