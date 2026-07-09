@@ -1,18 +1,14 @@
 package microarch.delivery.adapters.in.http.mappers;
 
+import libs.errs.Error;
+import libs.errs.Result;
 import microarch.delivery.adapters.in.http.model.Courier;
 import microarch.delivery.adapters.in.http.model.Location;
-import microarch.delivery.adapters.in.http.model.NewCourier;
-import microarch.delivery.adapters.in.http.model.NewOrder;
 import microarch.delivery.adapters.in.http.model.Order;
-import microarch.delivery.core.application.command.courier.CreateCourierCommand;
-import microarch.delivery.core.application.command.courier.MoveCourierCommand;
-import microarch.delivery.core.application.command.order.CreateOrderCommand;
 import microarch.delivery.core.application.query.dto.CourierDto;
 import microarch.delivery.core.application.query.dto.OrderDto;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Маппер для преобразования между HTTP моделями и Application DTO.
@@ -60,9 +56,8 @@ public class HttpMapper {
     /**
      * Преобразует HTTP Location в доменную Location.
      */
-    public static microarch.delivery.core.domain.model.Location toDomainLocation(Location httpLocation) {
-        return microarch.delivery.core.domain.model.Location.create(httpLocation.getX(), httpLocation.getY())
-                .getValue();
+    public static Result<microarch.delivery.core.domain.model.Location, Error> toDomainLocation(Location httpLocation) {
+        return microarch.delivery.core.domain.model.Location.create(httpLocation.getX(), httpLocation.getY());
     }
 
     /**
