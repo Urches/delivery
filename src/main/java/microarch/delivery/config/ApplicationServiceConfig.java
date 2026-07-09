@@ -1,10 +1,6 @@
 package microarch.delivery.config;
 
-import microarch.delivery.core.application.command.AssignOrderCommandHandler;
-import microarch.delivery.core.application.command.CompleteOrderCommandHandler;
-import microarch.delivery.core.application.command.CreateCourierCommandHandler;
-import microarch.delivery.core.application.command.MoveCourierCommandHandler;
-import microarch.delivery.core.application.command.CreateOrderCommandHandler;
+import microarch.delivery.core.application.command.*;
 import microarch.delivery.core.application.query.GetAllCouriersQueryHandler;
 import microarch.delivery.core.application.query.GetNotCompletedOrdersQueryHandler;
 import microarch.delivery.core.domain.services.OrderDispatchService;

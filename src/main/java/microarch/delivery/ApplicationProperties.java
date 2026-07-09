@@ -48,23 +48,23 @@ public class ApplicationProperties {
     }
 
     public static class Kafka {
-        private String stocksEventsTopic;
-        private String basketsEventsTopic;
+        private String stockEventsTopic;
+        private String basketEventsTopic;
 
-        public String getStocksEventsTopic() {
-            return stocksEventsTopic;
+        public String getStockEventsTopic() {
+            return stockEventsTopic;
         }
 
-        public void setStocksEventsTopic(String stocksEventsTopic) {
-            this.stocksEventsTopic = stocksEventsTopic;
+        public void setStockEventsTopic(String stockEventsTopic) {
+            this.stockEventsTopic = stockEventsTopic;
         }
 
-        public String getBasketsEventsTopic() {
-            return basketsEventsTopic;
+        public String getBasketEventsTopic() {
+            return basketEventsTopic;
         }
 
-        public void setBasketsEventsTopic(String basketsEventsTopic) {
-            this.basketsEventsTopic = basketsEventsTopic;
+        public void setBasketEventsTopic(String basketEventsTopic) {
+            this.basketEventsTopic = basketEventsTopic;
         }
     }
 }
