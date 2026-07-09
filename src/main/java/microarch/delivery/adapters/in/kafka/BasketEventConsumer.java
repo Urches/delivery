@@ -4,11 +4,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import libs.errs.DomainInvariantException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import microarch.delivery.core.application.command.CreateBasketOrderCommand;
-import microarch.delivery.core.application.command.CreateBasketOrderCommandHandler;
+import microarch.delivery.core.application.command.CreateOrderCommand;
+import microarch.delivery.core.application.command.CreateOrderCommandHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import queues.basket.events.BasketEventsProto;
+import queues.basket.events.BasketEventsProto.BasketConfirmedIntegrationEvent;
 
 import java.util.UUID;
 
@@ -20,22 +20,20 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BasketEventConsumer {
 
-    private final CreateBasketOrderCommandHandler createBasketOrderCommandHandler;
+    private final CreateOrderCommandHandler createOrderCommandHandler;
 
     @KafkaListener(topics = "${app.kafka.basket-events-topic}", groupId = "delivery-service")
     public void consume(byte[] message) {
         try {
-            var event = BasketEventsProto.BasketConfirmedIntegrationEvent.parseFrom(message);
+            var event = BasketConfirmedIntegrationEvent.parseFrom(message);
             log.info("Received BasketConfirmedIntegrationEvent for basket: {}", event.getBasketId());
 
             var basketId = UUID.fromString(event.getBasketId());
             var address = event.getAddress();
-            var items = event.getItemsList().stream().map(BasketEventConsumer::toBasketItem).toList();
+            var result = CreateOrderCommand.create(basketId, address.getCountry(), address.getCity(),
+                    address.getStreet(), address.getHouse(), address.getApartment(), event.getVolume())
+                    .flatMap(createOrderCommandHandler::handle);
 
-            var command = CreateBasketOrderCommand.create(basketId, address.getCountry(), address.getCity(),
-                    address.getStreet(), address.getHouse(), address.getApartment(), event.getVolume(), items);
-
-            var result = createBasketOrderCommandHandler.handle(command);
             if (result.isFailure()) {
                 throw new DomainInvariantException(result.getError());
             }
@@ -43,14 +41,5 @@ public class BasketEventConsumer {
         } catch (InvalidProtocolBufferException ex) {
             throw new RuntimeException("Failed to parse protobuf message", ex);
         }
-    }
-
-    private static CreateBasketOrderCommand.BasketItem toBasketItem(BasketEventsProto.Item item) {
-        return new CreateBasketOrderCommand.BasketItem(
-                item.getId(),
-                item.getGoodId(),
-                item.getTitle(),
-                item.getPrice(),
-                item.getQuantity());
     }
 }

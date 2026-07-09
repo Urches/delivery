@@ -71,10 +71,10 @@ class CreateOrderCommandHandlerTest {
     @Test
     void shouldCreateOrderWithDifferentVolumes() {
         // Arrange
-        var command1 = CreateOrderCommand
-                .create(UUID.randomUUID(), "Russia", "Moscow", "Street1", "1", "1", 1).getValueOrThrow();
-        var command2 = CreateOrderCommand
-                .create(UUID.randomUUID(), "Russia", "Moscow", "Street2", "2", "2", 15).getValueOrThrow();
+        var command1 = CreateOrderCommand.create(UUID.randomUUID(), "Russia", "Moscow", "Street1", "1", "1", 1)
+                .getValueOrThrow();
+        var command2 = CreateOrderCommand.create(UUID.randomUUID(), "Russia", "Moscow", "Street2", "2", "2", 15)
+                .getValueOrThrow();
 
         // Mock GeoClientPort to return valid locations
         when(geoClientPort.getGeolocationByStreet("Street1")).thenReturn(Result.success(Location.mustCreate(1, 1)));
