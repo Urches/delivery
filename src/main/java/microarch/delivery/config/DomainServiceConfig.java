@@ -1,7 +1,7 @@
 package microarch.delivery.config;
 
-import microarch.delivery.core.domain.service.OrderDispatchService;
-import microarch.delivery.core.domain.service.OrderDispatchServiceImpl;
+import microarch.delivery.core.domain.services.OrderDispatchService;
+import microarch.delivery.core.domain.services.OrderDispatchServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

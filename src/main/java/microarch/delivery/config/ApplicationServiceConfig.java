@@ -1,15 +1,10 @@
 package microarch.delivery.config;
 
 import microarch.delivery.adapters.out.postgres.outbox.OutboxDomainEventPublisher;
-import microarch.delivery.core.application.command.assignment.AssignOrderCommandHandler;
-import microarch.delivery.core.application.command.assignment.CompleteOrderCommandHandler;
-import microarch.delivery.core.application.command.courier.CreateCourierCommandHandler;
-import microarch.delivery.core.application.command.courier.MoveCourierCommandHandler;
-import microarch.delivery.core.application.command.order.CreateBasketOrderCommandHandler;
-import microarch.delivery.core.application.command.order.CreateOrderCommandHandler;
-import microarch.delivery.core.application.query.courier.GetAllCouriersQueryHandler;
-import microarch.delivery.core.application.query.order.GetNotCompletedOrdersQueryHandler;
-import microarch.delivery.core.domain.service.OrderDispatchService;
+import microarch.delivery.core.application.command.*;
+import microarch.delivery.core.application.query.GetAllCouriersQueryHandler;
+import microarch.delivery.core.application.query.GetNotCompletedOrdersQueryHandler;
+import microarch.delivery.core.domain.services.OrderDispatchService;
 import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.GeoClientPort;
 import microarch.delivery.core.ports.OrderRepository;
@@ -35,12 +30,6 @@ public class ApplicationServiceConfig {
     public CreateOrderCommandHandler createOrderCommandHandler(OrderRepository orderRepository,
             GeoClientPort geoClientPort) {
         return new CreateOrderCommandHandler(orderRepository, geoClientPort);
-    }
-
-    @Bean
-    public CreateBasketOrderCommandHandler createBasketOrderCommandHandler(OrderRepository orderRepository,
-            GeoClientPort geoClientPort) {
-        return new CreateBasketOrderCommandHandler(orderRepository, geoClientPort);
     }
 
     @Bean

@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static queues.basket.events.BasketEventsProto.*;
 
 /**
  * Интеграционный тест для Kafka Consumer.
@@ -62,12 +63,18 @@ class BasketEventConsumerIntegrationTest extends PostgresIntegrationTestBase {
         var volume = Volume.mustCreate(15);
         when(geoClientPort.getGeolocationByStreet(anyString())).thenReturn(Result.success(location));
 
-        queues.basket.events.BasketEventsProto.BasketConfirmedIntegrationEvent event = queues.basket.events.BasketEventsProto.BasketConfirmedIntegrationEvent
+        var event = BasketConfirmedIntegrationEvent
                 .newBuilder().setBasketId(basketId.toString())
-                .setAddress(queues.basket.events.BasketEventsProto.Address.newBuilder().setCountry("Russia")
-                        .setCity("Moscow").setStreet("Tverskaya").setHouse("10").setApartment("5"))
+                .setAddress(Address.newBuilder()
+                        .setCountry("Russia")
+                        .setCity("Moscow")
+                        .setStreet("Tverskaya")
+                        .setHouse("10")
+                        .setApartment("5"))
                 .setDeliveryPeriod(
-                        queues.basket.events.BasketEventsProto.DeliveryPeriod.newBuilder().setFrom(1).setTo(5))
+                        DeliveryPeriod.newBuilder()
+                                .setFrom(1)
+                                .setTo(5))
                 .setVolume(15).build();
 
         // Act - отправляем сообщение в Kafka
