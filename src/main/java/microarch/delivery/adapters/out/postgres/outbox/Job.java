@@ -3,14 +3,14 @@ package microarch.delivery.adapters.out.postgres.outbox;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import libs.ddd.DomainEvent;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
+import microarch.delivery.core.ports.DomainEventProducer;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class Job {
-    private final ApplicationEventPublisher publisher;
+    private final DomainEventProducer domainEventProducer;
     private final OutboxJpaRepository jpa;
     private final ObjectMapper objectMapper;
 
@@ -30,7 +30,7 @@ public class Job {
                 }
 
                 // Публикуем доменное событие
-                publisher.publishEvent(domainEvent);
+                domainEventProducer.produce(domainEvent);
 
                 // Отмечаем как отправленное
                 outboxMessage.markAsProcessed();
