@@ -50,6 +50,7 @@ public class ApplicationProperties {
     public static class Kafka {
         private String stockEventsTopic;
         private String basketEventsTopic;
+        private String orderEventsTopic;
 
         public String getStockEventsTopic() {
             return stockEventsTopic;
@@ -65,6 +66,14 @@ public class ApplicationProperties {
 
         public void setBasketEventsTopic(String basketEventsTopic) {
             this.basketEventsTopic = basketEventsTopic;
+        }
+
+        public String getOrderEventsTopic() {
+            return orderEventsTopic;
+        }
+
+        public void setOrderEventsTopic(String orderEventsTopic) {
+            this.orderEventsTopic = orderEventsTopic;
         }
     }
 }

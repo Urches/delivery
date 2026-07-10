@@ -1,5 +1,6 @@
 package microarch.delivery.core.application.command;
 
+import libs.ddd.DomainEventPublisher;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.domain.model.order.Order;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,11 +34,14 @@ class CompleteOrderCommandHandlerTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private DomainEventPublisher domainEventPublisher;
+
     private CompleteOrderCommandHandler handler;
 
     @BeforeEach
     void setUp() {
-        handler = new CompleteOrderCommandHandler(courierRepository, orderRepository);
+        handler = new CompleteOrderCommandHandler(courierRepository, orderRepository, domainEventPublisher);
     }
 
     @Test
@@ -65,6 +70,7 @@ class CompleteOrderCommandHandlerTest {
         assertThat(result.isSuccess()).isTrue();
         verify(courierRepository, times(1)).update(courier);
         verify(orderRepository, times(1)).update(order);
+        verify(domainEventPublisher, times(1)).publish(List.of(order));
     }
 
     @Test

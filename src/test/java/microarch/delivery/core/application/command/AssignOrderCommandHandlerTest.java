@@ -1,5 +1,6 @@
 package microarch.delivery.core.application.command;
 
+import libs.ddd.DomainEventPublisher;
 import libs.errs.Result;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.courier.Courier;
@@ -38,11 +39,14 @@ class AssignOrderCommandHandlerTest {
     @Mock
     private OrderDispatchService dispatchService;
 
+    @Mock
+    private DomainEventPublisher domainEventPublisher;
+
     private AssignOrderCommandHandler handler;
 
     @BeforeEach
     void setUp() {
-        handler = new AssignOrderCommandHandler(orderRepository, courierRepository, dispatchService);
+        handler = new AssignOrderCommandHandler(orderRepository, courierRepository, dispatchService, domainEventPublisher);
     }
 
     @Test
@@ -67,6 +71,7 @@ class AssignOrderCommandHandlerTest {
         assertThat(result.isSuccess()).isTrue();
         verify(orderRepository, times(1)).update(order);
         verify(courierRepository, times(1)).update(courier);
+        verify(domainEventPublisher, times(1)).publish(List.of(order));
     }
 
     @Test

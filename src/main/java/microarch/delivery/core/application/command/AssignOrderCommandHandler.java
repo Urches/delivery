@@ -1,5 +1,6 @@
 package microarch.delivery.core.application.command;
 
+import libs.ddd.DomainEventPublisher;
 import libs.errs.Error;
 import libs.errs.GeneralErrors;
 import libs.errs.Result;
@@ -8,6 +9,8 @@ import microarch.delivery.core.domain.services.OrderDispatchService;
 import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.OrderRepository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Обработчик команды на назначение заказа курьеру.
@@ -18,6 +21,7 @@ public class AssignOrderCommandHandler {
     private final OrderRepository orderRepository;
     private final CourierRepository courierRepository;
     private final OrderDispatchService dispatchService;
+    private final DomainEventPublisher domainEventPublisher;
 
     @Transactional
     public Result<Void, Error> handle(AssignOrderCommand command) {
@@ -38,9 +42,11 @@ public class AssignOrderCommandHandler {
         }
 
         // Сохраняем изменения в БД (курьер и заказ уже обновлены в памяти)
-        courierRepository.update(dispatchResult.getValue());
+        var courier = dispatchResult.getValue();
+        courierRepository.update(courier);
         orderRepository.update(order);
 
+        domainEventPublisher.publish(List.of(order));
         return Result.success();
     }
 }
